@@ -1,12 +1,10 @@
 import { documents } from '@/data/documents';
-import { conversations } from '@/data/conversations';
-import { connections } from '@/data/connections';
 import { rides } from '@/data/rides';
 import type { Message } from '@/types/second-brain';
 const delay = (ms = 350) => new Promise(resolve => setTimeout(resolve, ms));
 export { getDocuments, searchDocuments, updateDocumentTags, setDocumentExcluded, normalizeTags } from './library';
-export async function getConversations() { await delay(); return structuredClone(conversations); }
-export async function getConnections() { await delay(); return structuredClone(connections); }
+export { getConnections, setConnected, syncNow } from './connections';
+export { getConversations, createConversation, saveMessage, renameConversation, deleteConversation, groupFor } from './chat';
 export async function getRides() { await delay(); return structuredClone(rides); }
 export async function sendMessage(question: string): Promise<Message> {
  await delay(700);
