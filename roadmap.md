@@ -7,5 +7,5 @@
 
 ## Datos reales
 - [x] Biblioteca conectada al índice (etiquetas, excluir/reincluir, abrir original).
-- [ ] Conexiones: sincronización simulada con sync_runs — espera confirmación del usuario.
-- [ ] Chat: conversaciones y mensajes guardados — espera confirmación del usuario.
+- [x] Conexiones: conectar, desconectar y sincronizar (last_synced_at).
+- [x] Chat: conversaciones y mensajes guardados, renombrar y borrar.

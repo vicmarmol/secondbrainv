@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Brain, Plus, MessageSquare, Library, Plug, Sun, Moon, ChevronDown, ChevronRight, ArrowUp, ArrowUpRight, Sparkles, BookOpen, AudioLines, Bike, Users, Menu, X, ExternalLink, FileText, HardDrive, Triangle, Leaf, Settings2, CircleHelp } from 'lucide-react';
+import { Brain, Plus, MessageSquare, Library, Plug, Sun, Moon, ChevronDown, ChevronRight, ArrowUp, ArrowUpRight, Sparkles, BookOpen, AudioLines, Bike, Users, Menu, X, ExternalLink, FileText, HardDrive, Triangle, Leaf, Settings2, CircleHelp, Pencil, Trash2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getConversations, sendMessage } from '@/services';
+import { toast } from 'sonner';
+import { getConversations, sendMessage, createConversation, saveMessage, renameConversation, deleteConversation, groupFor } from '@/services';
+import { ConnectionsView } from './connections';
 import type { Conversation, Message, Citation } from '@/types/second-brain';
 import { AssistantMessage, TypeIcon, formatDate } from './message';
 import { LibraryView } from './library';
@@ -22,21 +24,42 @@ export function SecondBrainApp({ view = 'chat' }: { view?: 'chat' | 'library' | 
  const [pending, setPending] = useState<string | null>(null);
  const [animatedIds, setAnimatedIds] = useState<string[]>([]);
  const [citation, setCitation] = useState<Citation | null>(null);
+ const [editing, setEditing] = useState<{ id: string; title: string } | null>(null);
  const bodyRef = useRef<HTMLDivElement>(null);
  const textareaRef = useRef<HTMLTextAreaElement>(null);
  const messages = conversations.find(c => c.id === active)?.messages ?? [];
- useEffect(() => { let alive = true; getConversations().then(data => { if (alive) { setConversations(data); setLoading(false); } }); return () => { alive = false; }; }, []);
+ useEffect(() => { let alive = true; getConversations().then(data => { if (alive) setConversations(data); }).catch((e: Error) => toast.error(e.message)).finally(() => { if (alive) setLoading(false); }); return () => { alive = false; }; }, []);
  useEffect(() => { document.documentElement.classList.toggle('dark', dark); }, [dark]);
  useEffect(() => { if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight; }, [messages.length, pending]);
  function newChat() { setActive(null); setCitation(null); setInput(''); setMobile(false); textareaRef.current?.focus(); }
+ const touch = (id: string, extra: Message) => setConversations(prev => { const c = prev.find(x => x.id === id); return c ? [{ ...c, updatedAt: new Date().toISOString(), messages: [...c.messages, extra] }, ...prev.filter(x => x.id !== id)] : prev; });
  async function send(text: string) {
   if (!text.trim() || pending) return;
-  const id = active ?? `conversation-${crypto.randomUUID()}`;
+  const isNew = !active;
+  const id = active ?? crypto.randomUUID();
   const user: Message = { id: crypto.randomUUID(), role: 'user', content: text.trim(), citations: [] };
-  setConversations(prev => active ? prev.map(c => c.id === id ? { ...c, messages: [...c.messages, user] } : c) : [{ id, title: text.trim(), group: 'Hoy', messages: [user] }, ...prev]);
+  if (isNew) setConversations(prev => [{ id, title: text.trim().slice(0, 120), group: 'Hoy', updatedAt: new Date().toISOString(), messages: [user] }, ...prev]); else touch(id, user);
   setActive(id); setInput(''); setPending(id); setCitation(null);
-  try { const answer = await sendMessage(text); setAnimatedIds(prev => [...prev, answer.id]); setConversations(prev => prev.map(c => c.id === id ? { ...c, messages: [...c.messages, answer] } : c)); }
+  try {
+   if (isNew) await createConversation(id, text.trim());
+   await saveMessage(id, user);
+   const answer = await sendMessage(text);
+   setAnimatedIds(prev => [...prev, answer.id]); touch(id, answer);
+   await saveMessage(id, answer);
+  } catch (e) { toast.error((e as Error).message); }
   finally { setPending(null); }
+ }
+ async function rename() {
+  if (!editing) return;
+  const { id, title: t } = editing; setEditing(null);
+  if (!t.trim()) return;
+  try { await renameConversation(id, t); setConversations(prev => prev.map(c => c.id === id ? { ...c, title: t.trim() } : c)); }
+  catch (e) { toast.error((e as Error).message); }
+ }
+ async function remove(c: Conversation) {
+  if (!window.confirm(`¿Borrar «${c.title}»? Esta acción no se puede deshacer.`)) return;
+  try { await deleteConversation(c.id); setConversations(prev => prev.filter(x => x.id !== c.id)); if (active === c.id) newChat(); }
+  catch (e) { toast.error((e as Error).message); }
  }
  const title = view === 'chat' ? 'Chat' : view === 'library' ? 'Biblioteca' : 'Conexiones';
  return <div className="app-shell">
@@ -45,11 +68,11 @@ export function SecondBrainApp({ view = 'chat' }: { view?: 'chat' | 'library' | 
   <div className="brand"><span className="brand-mark"><Brain size={21}/></span>Second Brain</div>
   <Button variant="ghost" className="new-chat" onClick={newChat} asChild={view !== 'chat'}>{view === 'chat' ? <><Plus/>Nueva conversación</> : <Link to="/"><Plus/>Nueva conversación</Link>}</Button>
   <nav aria-label="Navegación principal"><Button variant="ghost" className="nav-item" data-active={view === 'chat'} asChild><Link to="/" onClick={() => setMobile(false)}><MessageSquare/>Chat{view === 'chat' && <span className="nav-tail"/>}</Link></Button><Button variant="ghost" className="nav-item" data-active={view === 'library'} asChild><Link to="/biblioteca" onClick={() => setMobile(false)}><Library/>Biblioteca</Link></Button><Button variant="ghost" className="nav-item" data-active={view === 'connections'} asChild><Link to="/conexiones" onClick={() => setMobile(false)}><Plug/>Conexiones</Link></Button></nav>
-  <div className="history"><div className="history-label">Conversaciones recientes</div>{loading ? <p className="px-3 text-xs text-muted-foreground">Cargando conversaciones…</p> : (['Hoy','Ayer','Anteriores'] as const).map(group => <div key={group}><div className="history-group">{group}</div>{conversations.filter(c => c.group === group).map(c => <Button key={c.id} variant="ghost" className="history-item" aria-pressed={active === c.id} onClick={() => { setActive(c.id); setCitation(null); setMobile(false); }} asChild={view !== 'chat'}>{view !== 'chat' ? <Link to="/"><MessageSquare size={13}/><span>{c.title}</span></Link> : <><MessageSquare size={13}/><span>{c.title}</span></>}</Button>)}</div>)}</div>
+  <div className="history"><div className="history-label">Conversaciones recientes</div>{loading ? <p className="px-3 text-xs text-muted-foreground">Cargando conversaciones…</p> : (['Hoy','Ayer','Anteriores'] as const).map(group => <div key={group}><div className="history-group">{group}</div>{conversations.filter(c => (c.updatedAt ? groupFor(c.updatedAt) : c.group) === group).map(c => editing?.id === c.id ? <form key={c.id} className="history-row" onSubmit={e => { e.preventDefault(); rename(); }}><input autoFocus aria-label="Nuevo título" className="history-rename" value={editing.title} onChange={e => setEditing({ id: c.id, title: e.target.value })} onKeyDown={e => { if (e.key === 'Escape') setEditing(null); }}/><Button type="submit" variant="ghost" size="icon" aria-label="Guardar título"><Check/></Button></form> : <div key={c.id} className="history-row"><Button variant="ghost" className="history-item" aria-pressed={active === c.id} onClick={() => { setActive(c.id); setCitation(null); setMobile(false); }} asChild={view !== 'chat'}>{view !== 'chat' ? <Link to="/"><MessageSquare size={13}/><span>{c.title}</span></Link> : <><MessageSquare size={13}/><span>{c.title}</span></>}</Button><span className="history-actions"><Button variant="ghost" size="icon" aria-label={`Renombrar ${c.title}`} onClick={() => setEditing({ id: c.id, title: c.title })}><Pencil/></Button><Button variant="ghost" size="icon" aria-label={`Borrar ${c.title}`} onClick={() => remove(c)}><Trash2/></Button></span></div>)}</div>)}</div>
   <div className="sidebar-bottom"><div className="theme-picker" aria-label="Apariencia"><Button variant="ghost" aria-pressed={!dark} onClick={() => setDark(false)}><Sun/>Claro</Button><Button variant="ghost" aria-pressed={dark} onClick={() => setDark(true)}><Moon/>Oscuro</Button></div><div className="profile"><div className="avatar">AL</div><div className="flex-1"><div className="text-xs font-medium">Álex López</div><div className="text-[10px] text-muted-foreground mt-1">Espacio personal</div></div><span className="text-[9px] text-muted-foreground border border-border rounded px-1.5 py-0.5">DEMO</span></div></div>
  </aside>
  <main className={`workspace ${citation ? 'preview-open' : ''}`}><header className="topbar"><div className="breadcrumb"><Button variant="ghost" size="icon" className="mobile-menu" aria-label="Abrir menú" onClick={() => setMobile(!mobile)}>{mobile ? <X/> : <Menu/>}</Button><span>Mi espacio</span><ChevronRight size={12}/><span className="text-foreground font-medium">{title}</span></div><div className="top-status"><span className="status-dot"/><span>Todo al día</span><span className="mx-2 text-border">|</span><span>Modo de ejemplo</span><CircleHelp size={14}/></div></header>
- {view === 'library' ? <LibraryView/> : view !== 'chat' ? <div className="future-page"><div className="empty-symbol"><Plug size={26}/></div><h1>{title}</h1><p>Tus fuentes de información, en un solo lugar.</p><span className="text-xs text-muted-foreground">Disponible en la siguiente etapa del prototipo</span><div className="mt-7"><Button variant="outline" asChild><Link to="/">Volver al chat</Link></Button></div></div> : <>
+ {view === 'library' ? <LibraryView/> : view === 'connections' ? <ConnectionsView/> : view !== 'chat' ? <div className="future-page"><div className="empty-symbol"><Plug size={26}/></div><h1>{title}</h1><p>Tus fuentes de información, en un solo lugar.</p><span className="text-xs text-muted-foreground">Disponible en la siguiente etapa del prototipo</span><div className="mt-7"><Button variant="outline" asChild><Link to="/">Volver al chat</Link></Button></div></div> : <>
  <div className="chat-body" ref={bodyRef}>
  {!messages.length ? <section className="empty-chat"><div className="empty-symbol"><Brain size={30} strokeWidth={1.5}/></div><h1>¿Qué necesitas recordar?</h1><p className="intro">Tus ideas, reuniones y conocimientos. Todo conectado.<br/>Pregunta algo y encuentra la respuesta en tus fuentes.</p><div className="suggestions">{suggestions.map(s => <Button key={s.label} variant="ghost" className="suggestion" disabled={!!pending} onClick={() => send(s.label)}><span className="suggestion-top"><s.icon size={15}/>{s.category}<ArrowUpRight/></span><span>{s.label}</span></Button>)}</div><div className="source-row"><span>Tu conocimiento, conectado con</span><div className="source-logos" aria-label="Notion, Drive, Dropbox, Granola y Garmin"><span className="source-logo notion" title="Notion">N</span><span className="source-logo" title="Google Drive"><Triangle size={20}/></span><span className="source-logo" title="Dropbox"><HardDrive size={19}/></span><span className="source-logo" title="Granola"><Leaf size={20}/></span><span className="source-logo" title="Garmin"><Bike size={20}/></span></div></div></section> : <div className="messages">{messages.map(m => m.role === 'user' ? <div key={m.id} className="user-message">{m.content}</div> : <AssistantMessage key={m.id} message={m} animate={animatedIds.includes(m.id)} onCitation={setCitation} onFeedback={value => setConversations(prev => prev.map(c => c.id === active ? { ...c, messages: c.messages.map(item => item.id === m.id ? { ...item, feedback: item.feedback === value ? undefined : value } : item) } : c))}/>)}{pending === active && <div className="assistant-message" role="status"><div className="assistant-heading"><Brain size={19} className="text-primary"/>Buscando en tus fuentes…</div><div className="loading-dots"><span/><span/><span/></div></div>}</div>}
  </div>
