@@ -15,6 +15,13 @@
       "when": 1794595797787,
       "tag": "0001_connections_and_chat_writes",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794598769719,
+      "tag": "0002_per_user_data_and_auth",
+      "breakpoints": true
     }
   ]
 }

@@ -31,6 +31,7 @@ use the editor.
 
 ## Prototype architecture
 - UI components consume `src/services` only; services are migrated feature by feature from fixtures in `src/data` to Lovable Cloud tables (Library, Connections and Chat done; simulated answers stay in code), mapping lowercase DB enums to display labels in `src/types`, so the UI stays independent of storage.
-- The app has no sign-in (user decision for this prototype stage); RLS grants anon only the minimum per feature, e.g. documents are readable and only `tags`/`excluded` are updatable via column grants, never insert/delete.
+- Every app table carries `user_id` (default `auth.uid()`) and RLS limits authenticated users to their own rows; anon has no access. App pages live under `src/routes/_authenticated/` so they require a session.
+- New users get one connections row per source from an `auth.users` trigger; example data is only inserted per user by the `load_sample_data()` RPC (Ajustes), whose documents use `external_id = 'doc-N'` so simulated chat citations resolve by external id.
 - Use the shared SecondBrainApp shell for all content routes; the chat is the implemented first stage and the other destinations explicitly represent future stages.
 - Keep all visual tokens and reusable layouts in `src/styles.css`; the light/dark selector switches the document class without external persistence.
