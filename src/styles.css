@@ -40,6 +40,8 @@
 .profile { display: flex; align-items: center; gap: 10px; padding: 0 8px 5px; }
 .avatar { height: 32px; width: 32px; border-radius: 50%; background: var(--accent); color: var(--primary); display: grid; place-items: center; font-size: 11px; font-weight: 600; }
 .workspace { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; }
+@media (min-width: 1100px) { .workspace.preview-open { padding-right: 370px; } .preview-open .top-status { display: none; } }
+@media (max-width: 640px) { .topbar .breadcrumb { white-space: nowrap; } .topbar .top-status > span:nth-child(3), .topbar .top-status > span:nth-child(4), .topbar .top-status > svg { display: none; } }
 .topbar { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; height: 76px; border-bottom: 1px solid var(--border); padding: 0 37px; font-size: 12px; }
 .breadcrumb { display: flex; align-items: center; gap: 11px; color: var(--muted-foreground); }
 .top-status { display: flex; align-items: center; gap: 7px; color: var(--muted-foreground); font-size: 11px; }
