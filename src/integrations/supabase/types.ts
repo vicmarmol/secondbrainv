@@ -14,7 +14,181 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      connections: {
+        Row: {
+          created_at: string
+          document_count: number
+          id: string
+          last_synced_at: string | null
+          provider: string
+          status: Database["public"]["Enums"]["connection_status"]
+        }
+        Insert: {
+          created_at?: string
+          document_count?: number
+          id?: string
+          last_synced_at?: string | null
+          provider: string
+          status?: Database["public"]["Enums"]["connection_status"]
+        }
+        Update: {
+          created_at?: string
+          document_count?: number
+          id?: string
+          last_synced_at?: string | null
+          provider?: string
+          status?: Database["public"]["Enums"]["connection_status"]
+        }
+        Relationships: []
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          content: string
+          content_hash: string | null
+          created_at: string
+          excluded: boolean
+          external_id: string
+          external_url: string
+          id: string
+          source: Database["public"]["Enums"]["document_source"]
+          source_modified_at: string | null
+          status: Database["public"]["Enums"]["document_status"]
+          summary: string
+          tags: string[]
+          title: string
+          type: Database["public"]["Enums"]["document_type"]
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          content_hash?: string | null
+          created_at?: string
+          excluded?: boolean
+          external_id: string
+          external_url: string
+          id?: string
+          source: Database["public"]["Enums"]["document_source"]
+          source_modified_at?: string | null
+          status?: Database["public"]["Enums"]["document_status"]
+          summary?: string
+          tags?: string[]
+          title: string
+          type: Database["public"]["Enums"]["document_type"]
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          content_hash?: string | null
+          created_at?: string
+          excluded?: boolean
+          external_id?: string
+          external_url?: string
+          id?: string
+          source?: Database["public"]["Enums"]["document_source"]
+          source_modified_at?: string | null
+          status?: Database["public"]["Enums"]["document_status"]
+          summary?: string
+          tags?: string[]
+          title?: string
+          type?: Database["public"]["Enums"]["document_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          citations: Json
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["message_role"]
+        }
+        Insert: {
+          citations?: Json
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["message_role"]
+        }
+        Update: {
+          citations?: Json
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["message_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sync_runs: {
+        Row: {
+          connection_id: string
+          finished_at: string | null
+          id: string
+          new_documents: number
+          started_at: string
+          status: Database["public"]["Enums"]["sync_status"]
+          updated_documents: number
+        }
+        Insert: {
+          connection_id: string
+          finished_at?: string | null
+          id?: string
+          new_documents?: number
+          started_at?: string
+          status?: Database["public"]["Enums"]["sync_status"]
+          updated_documents?: number
+        }
+        Update: {
+          connection_id?: string
+          finished_at?: string | null
+          id?: string
+          new_documents?: number
+          started_at?: string
+          status?: Database["public"]["Enums"]["sync_status"]
+          updated_documents?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sync_runs_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +197,18 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      connection_status: "conectado" | "desconectado" | "proximamente"
+      document_source:
+        | "notion"
+        | "drive"
+        | "dropbox"
+        | "granola"
+        | "garmin"
+        | "gmail"
+      document_status: "indexado" | "procesando" | "error"
+      document_type: "nota" | "pdf" | "reunion" | "entreno"
+      message_role: "user" | "assistant"
+      sync_status: "en_curso" | "completada" | "error"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +335,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      connection_status: ["conectado", "desconectado", "proximamente"],
+      document_source: [
+        "notion",
+        "drive",
+        "dropbox",
+        "granola",
+        "garmin",
+        "gmail",
+      ],
+      document_status: ["indexado", "procesando", "error"],
+      document_type: ["nota", "pdf", "reunion", "entreno"],
+      message_role: ["user", "assistant"],
+      sync_status: ["en_curso", "completada", "error"],
+    },
   },
 } as const
