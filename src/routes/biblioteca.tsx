@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { SecondBrainApp } from '@/components/second-brain/app';
+export const Route = createFileRoute('/biblioteca')({ head: () => ({ meta: [{ title: 'Biblioteca · Second Brain' }, { name: 'description', content: 'Tu biblioteca personal de documentos, notas y reuniones.' }, { property: 'og:title', content: 'Biblioteca · Second Brain' }, { property: 'og:description', content: 'Tus fuentes de conocimiento reunidas.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' }] }), component: () => <SecondBrainApp view="library"/> });
