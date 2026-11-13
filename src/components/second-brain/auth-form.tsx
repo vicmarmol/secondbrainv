@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Brain } from 'lucide-react';
 import { toast } from 'sonner';
@@ -16,7 +16,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
  const [busy, setBusy] = useState(false);
  const [sent, setSent] = useState(false);
  const signup = mode === 'signup';
- async function submit(e: React.FormEvent) {
+ async function submit(e: FormEvent) {
   e.preventDefault(); setBusy(true);
   try {
    if (signup) {

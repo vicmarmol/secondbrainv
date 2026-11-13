@@ -9,3 +9,7 @@
 - [x] Biblioteca conectada al índice (etiquetas, excluir/reincluir, abrir original).
 - [x] Conexiones: conectar, desconectar y sincronizar (last_synced_at).
 - [x] Chat: conversaciones y mensajes guardados, renombrar y borrar.
+
+## Cuentas
+- [x] Inicio de sesión, registro con confirmación y Google; páginas protegidas y cerrar sesión.
+- [x] Datos por usuario con seguridad por filas; datos de ejemplo bajo demanda en Ajustes.
