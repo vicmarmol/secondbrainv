@@ -21,7 +21,9 @@ export type Database = {
           id: string
           last_synced_at: string | null
           provider: string
+          source: string
           status: Database["public"]["Enums"]["connection_status"]
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -29,7 +31,9 @@ export type Database = {
           id?: string
           last_synced_at?: string | null
           provider: string
+          source?: string
           status?: Database["public"]["Enums"]["connection_status"]
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -37,7 +41,9 @@ export type Database = {
           id?: string
           last_synced_at?: string | null
           provider?: string
+          source?: string
           status?: Database["public"]["Enums"]["connection_status"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -47,18 +53,21 @@ export type Database = {
           id: string
           title: string
           updated_at: string
+          user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           title: string
           updated_at?: string
+          user_id?: string
         }
         Update: {
           created_at?: string
           id?: string
           title?: string
           updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -79,6 +88,7 @@ export type Database = {
           title: string
           type: Database["public"]["Enums"]["document_type"]
           updated_at: string
+          user_id: string
         }
         Insert: {
           content?: string
@@ -96,6 +106,7 @@ export type Database = {
           title: string
           type: Database["public"]["Enums"]["document_type"]
           updated_at?: string
+          user_id?: string
         }
         Update: {
           content?: string
@@ -113,6 +124,7 @@ export type Database = {
           title?: string
           type?: Database["public"]["Enums"]["document_type"]
           updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -124,6 +136,7 @@ export type Database = {
           created_at: string
           id: string
           role: Database["public"]["Enums"]["message_role"]
+          user_id: string
         }
         Insert: {
           citations?: Json
@@ -132,6 +145,7 @@ export type Database = {
           created_at?: string
           id?: string
           role: Database["public"]["Enums"]["message_role"]
+          user_id?: string
         }
         Update: {
           citations?: Json
@@ -140,6 +154,7 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["message_role"]
+          user_id?: string
         }
         Relationships: [
           {
@@ -160,6 +175,7 @@ export type Database = {
           started_at: string
           status: Database["public"]["Enums"]["sync_status"]
           updated_documents: number
+          user_id: string
         }
         Insert: {
           connection_id: string
@@ -169,6 +185,7 @@ export type Database = {
           started_at?: string
           status?: Database["public"]["Enums"]["sync_status"]
           updated_documents?: number
+          user_id?: string
         }
         Update: {
           connection_id?: string
@@ -178,6 +195,7 @@ export type Database = {
           started_at?: string
           status?: Database["public"]["Enums"]["sync_status"]
           updated_documents?: number
+          user_id?: string
         }
         Relationships: [
           {
@@ -194,7 +212,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      load_sample_data: { Args: never; Returns: undefined }
     }
     Enums: {
       connection_status: "conectado" | "desconectado" | "proximamente"
