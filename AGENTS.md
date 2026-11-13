@@ -30,6 +30,7 @@ use the editor.
 <!-- LOVABLE:END -->
 
 ## Prototype architecture
-- Keep fixtures in `src/data`, shared contracts in `src/types`, and asynchronous mock access in `src/services`; UI components consume services rather than fixture modules so real data can replace mocks later.
+- UI components consume `src/services` only; services are migrated feature by feature from fixtures in `src/data` to Lovable Cloud tables (Library done), mapping lowercase DB enums to display labels in `src/types`, so the UI stays independent of storage.
+- The app has no sign-in (user decision for this prototype stage); RLS grants anon only the minimum per feature, e.g. documents are readable and only `tags`/`excluded` are updatable via column grants, never insert/delete.
 - Use the shared SecondBrainApp shell for all content routes; the chat is the implemented first stage and the other destinations explicitly represent future stages.
 - Keep all visual tokens and reusable layouts in `src/styles.css`; the light/dark selector switches the document class without external persistence.
