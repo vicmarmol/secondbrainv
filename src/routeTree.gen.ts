@@ -9,86 +9,90 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as BibliotecaRouteImport } from './routes/biblioteca'
-import { Route as ConexionesRouteImport } from './routes/conexiones'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedBibliotecaRouteImport } from './routes/_authenticated/biblioteca'
+import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BibliotecaRoute = BibliotecaRouteImport.update({
-  id: '/biblioteca',
+const AuthenticatedBibliotecaRoute = AuthenticatedBibliotecaRouteImport.update({
+  id: '/_authenticated/biblioteca',
   path: '/biblioteca',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConexionesRoute = ConexionesRouteImport.update({
-  id: '/conexiones',
+const AuthenticatedConexionesRoute = AuthenticatedConexionesRouteImport.update({
+  id: '/_authenticated/conexiones',
   path: '/conexiones',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/biblioteca': typeof BibliotecaRoute
-  '/conexiones': typeof ConexionesRoute
+  '/biblioteca': typeof AuthenticatedBibliotecaRoute
+  '/conexiones': typeof AuthenticatedConexionesRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/biblioteca': typeof BibliotecaRoute
-  '/conexiones': typeof ConexionesRoute
+  '/biblioteca': typeof AuthenticatedBibliotecaRoute
+  '/conexiones': typeof AuthenticatedConexionesRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/biblioteca': typeof BibliotecaRoute
-  '/conexiones': typeof ConexionesRoute
+  '/_authenticated/biblioteca': typeof AuthenticatedBibliotecaRoute
+  '/_authenticated/conexiones': typeof AuthenticatedConexionesRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/biblioteca' | '/conexiones'
+  fullPaths: '/biblioteca' | '/conexiones' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/biblioteca' | '/conexiones'
-  id: '__root__' | '/' | '/biblioteca' | '/conexiones'
+  to: '/biblioteca' | '/conexiones' | '/'
+  id:
+    | '__root__'
+    | '/_authenticated/biblioteca'
+    | '/_authenticated/conexiones'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  BibliotecaRoute: typeof BibliotecaRoute
-  ConexionesRoute: typeof ConexionesRoute
+  AuthenticatedBibliotecaRoute: typeof AuthenticatedBibliotecaRoute
+  AuthenticatedConexionesRoute: typeof AuthenticatedConexionesRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/biblioteca': {
-      id: '/biblioteca'
+    '/_authenticated/biblioteca': {
+      id: '/_authenticated/biblioteca'
       path: '/biblioteca'
       fullPath: '/biblioteca'
-      preLoaderRoute: typeof BibliotecaRouteImport
+      preLoaderRoute: typeof AuthenticatedBibliotecaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/conexiones': {
-      id: '/conexiones'
+    '/_authenticated/conexiones': {
+      id: '/_authenticated/conexiones'
       path: '/conexiones'
       fullPath: '/conexiones'
-      preLoaderRoute: typeof ConexionesRouteImport
+      preLoaderRoute: typeof AuthenticatedConexionesRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  BibliotecaRoute: BibliotecaRoute,
-  ConexionesRoute: ConexionesRoute,
+  AuthenticatedBibliotecaRoute: AuthenticatedBibliotecaRoute,
+  AuthenticatedConexionesRoute: AuthenticatedConexionesRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

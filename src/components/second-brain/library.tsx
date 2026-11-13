@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Search, X, ExternalLink, Plus, EyeOff, RotateCcw } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { Search, Plug, X, ExternalLink, Plus, EyeOff, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,6 +39,7 @@ export function LibraryView() {
  const excludedCount = (docs ?? []).filter(d => d.excluded).length;
  const selected = docs?.find(d => d.id === selectedId) ?? null;
  const replace = (doc: Document) => setDocs(prev => prev?.map(d => d.id === doc.id ? doc : d) ?? prev);
+ if (docs && docs.length === 0) return <div className="future-page"><div className="empty-symbol"><Plug size={26}/></div><h1>Conecta tu primera fuente</h1><p>Tu biblioteca está vacía. Conecta una fuente para empezar a reunir tus documentos.</p><div className="mt-7"><Button asChild><Link to="/conexiones">Ir a Conexiones</Link></Button></div></div>;
  return <div className={`library ${selected ? 'with-preview' : ''}`}>
   <div className="library-main">
    <div className="library-head"><div><h1>Biblioteca</h1><p>El índice de lo que vive en tus fuentes. Los documentos se añaden al sincronizar tus conexiones.</p></div><span className="library-count">{docs ? `${visible.length} de ${docs.length - (showExcluded ? 0 : excludedCount)} documentos` : ''}</span></div>

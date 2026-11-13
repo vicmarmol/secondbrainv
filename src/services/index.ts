@@ -4,6 +4,7 @@ import type { Message } from '@/types/second-brain';
 const delay = (ms = 350) => new Promise(resolve => setTimeout(resolve, ms));
 export { getDocuments, searchDocuments, updateDocumentTags, setDocumentExcluded, normalizeTags } from './library';
 export { getConnections, setConnected, syncNow } from './connections';
+export { loadSampleData, signOut, getCurrentEmail } from './settings';
 export { getConversations, createConversation, saveMessage, renameConversation, deleteConversation, groupFor } from './chat';
 export async function getRides() { await delay(); return structuredClone(rides); }
 export async function sendMessage(question: string): Promise<Message> {

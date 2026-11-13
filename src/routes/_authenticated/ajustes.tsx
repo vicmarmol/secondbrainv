@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { SecondBrainApp } from '@/components/second-brain/app';
+export const Route = createFileRoute('/_authenticated/ajustes')({ head: () => ({ meta: [{ title: 'Ajustes · Second Brain' }, { name: 'description', content: 'Ajustes de tu espacio personal en Second Brain.' }, { property: 'og:title', content: 'Ajustes · Second Brain' }, { property: 'og:description', content: 'Configura tu espacio personal.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' }] }), component: () => <SecondBrainApp view="settings"/> });
