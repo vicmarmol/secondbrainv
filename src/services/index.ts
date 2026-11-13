@@ -4,8 +4,7 @@ import { connections } from '@/data/connections';
 import { rides } from '@/data/rides';
 import type { Message } from '@/types/second-brain';
 const delay = (ms = 350) => new Promise(resolve => setTimeout(resolve, ms));
-export async function getDocuments() { await delay(); return structuredClone(documents); }
-export async function searchDocuments(query: string) { await delay(); const q = query.toLocaleLowerCase('es'); return structuredClone(documents.filter(d => `${d.title} ${d.summary}`.toLocaleLowerCase('es').includes(q))); }
+export { getDocuments, searchDocuments, updateDocumentTags, setDocumentExcluded, normalizeTags } from './library';
 export async function getConversations() { await delay(); return structuredClone(conversations); }
 export async function getConnections() { await delay(); return structuredClone(connections); }
 export async function getRides() { await delay(); return structuredClone(rides); }
