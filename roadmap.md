@@ -5,4 +5,7 @@
 - [x] Chat con respuestas progresivas, citas, desacuerdos y comparación ciclista.
 - [x] Verificar preguntas, conversaciones y vista previa en escritorio y móvil.
 
-Biblioteca y Conexiones completas quedan para la siguiente etapa solicitada.
+## Datos reales
+- [x] Biblioteca conectada al índice (etiquetas, excluir/reincluir, abrir original).
+- [ ] Conexiones: sincronización simulada con sync_runs — espera confirmación del usuario.
+- [ ] Chat: conversaciones y mensajes guardados — espera confirmación del usuario.
