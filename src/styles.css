@@ -154,3 +154,10 @@
 .exclude-box strong { font-size: 13px; font-weight: 500; }
 .exclude-box p { font-size: 11px !important; line-height: 1.5 !important; color: var(--muted-foreground); margin-top: 4px; }
 @media (max-width: 760px) { .library-main { padding: 24px 16px 40px; } .library-head { flex-direction: column; align-items: flex-start; } .library-row { grid-template-columns: minmax(0, 1fr) auto; } .library-row > span:nth-child(2), .library-row > span:nth-child(3), .library-row > span:nth-child(4) { display: none; } }
+.history-row { position: relative; display: flex; align-items: center; }
+.history-row .history-item { padding-right: 60px; }
+.history-actions { position: absolute; right: 4px; display: flex; opacity: 0; transition: opacity .15s; }
+.history-row:hover .history-actions, .history-row:focus-within .history-actions { opacity: 1; }
+.history-actions button { width: 26px; height: 26px; color: var(--muted-foreground); }
+.history-actions svg { width: 13px; height: 13px; }
+.history-rename { flex: 1; min-width: 0; height: 32px; margin: 2px 0 2px 8px; padding: 0 8px; font-size: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--background); color: var(--foreground); }
