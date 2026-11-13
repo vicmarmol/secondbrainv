@@ -3,7 +3,7 @@ import { Brain, Copy, Check, ThumbsUp, ThumbsDown, FileText, NotebookPen, Bike, 
 import { Button } from '@/components/ui/button';
 import type { Message, Citation, DocumentType } from '@/types/second-brain';
 import { RideChart } from './ride-chart';
-export function TypeIcon({ type, className }: { type: DocumentType; className?: string }) { const Icon = type === 'PDF' ? FileText : type === 'réunion' as DocumentType ? AudioLines : type === 'reunión' ? AudioLines : type === 'entreno' ? Bike : NotebookPen; return <Icon className={className} size={16}/>; }
+export function TypeIcon({ type, className }: { type: DocumentType; className?: string }) { const Icon = type === 'PDF' ? FileText : type === 'reunión' ? AudioLines : type === 'entreno' ? Bike : NotebookPen; return <Icon className={className} size={16}/>; }
 export const formatDate = (date: string) => new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
 export function AssistantMessage({ message, animate, onCitation, onFeedback }: { message: Message; animate: boolean; onCitation: (citation: Citation) => void; onFeedback: (value: 'helpful' | 'unhelpful') => void }) {
  const [length, setLength] = useState(animate ? 0 : message.content.length);
