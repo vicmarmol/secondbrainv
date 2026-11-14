@@ -23,6 +23,7 @@ export const getNotionState = createServerFn({ method: 'POST' }).middleware([req
 });
 export const beginNotionSync = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
  const { supabase: db, userId } = context;
+ const { requireAppAccess } = await import('./billing.server'); await requireAppAccess(db);
  const connection = await ownedConnection(db, userId);
  if (connection.status !== 'conectado' || !await notionConfigured(userId)) throw new NotionError('Conecta tu propia cuenta de Notion antes de sincronizar.');
  const existing = checked(await db.from('sync_runs').select('*').eq('connection_id', connection.id).eq('user_id', userId).eq('status', 'en_curso').maybeSingle());
@@ -34,6 +35,7 @@ export const beginNotionSync = createServerFn({ method: 'POST' }).middleware([re
 });
 export const stepNotionSync = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(z.object({ runId: z.string().uuid() })).handler(async ({ context, data }) => {
  const { supabase: db, userId } = context;
+ const { requireAppAccess } = await import('./billing.server'); await requireAppAccess(db);
  const run = checked(await db.from('sync_runs').select('*').eq('id', data.runId).eq('user_id', userId).single());
  if (!run) throw new Error('Sincronización no disponible.');
  if (run.status !== 'en_curso') return { done: true, processed: 0, newDocuments: run.new_documents, updatedDocuments: run.updated_documents, hasMore: false, error: run.error_message };
