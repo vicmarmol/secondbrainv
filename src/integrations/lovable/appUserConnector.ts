@@ -8,7 +8,7 @@ async function gatewayJson(url: string, init: RequestInit) {
  const res = await fetch(url, init);
  const text = await res.text();
  if (!res.ok) throw new Error(`App User Connector (${res.status}): ${text}`);
- return JSON.parse(text);
+ return text ? JSON.parse(text) : {};
 }
 export async function authorizeAppUserOAuth(params: { gatewayBaseUrl: string; connectorId: string; appUserId: string; clientAPIKey: string; returnUrl: string; credentialsConfiguration?: Record<string, unknown> }) {
  const body = await gatewayJson(`${params.gatewayBaseUrl}/api/v1/app-users/oauth2/authorize`, {
