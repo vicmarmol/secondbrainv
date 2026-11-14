@@ -29,6 +29,13 @@
       "when": 1794651171142,
       "tag": "0003_notion_sync_progress",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794652017547,
+      "tag": "0004_real_chat_retrieval",
+      "breakpoints": true
     }
   ]
 }
