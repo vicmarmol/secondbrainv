@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { getConnections, setConnected, syncNow } from '@/services';
 import type { Connection } from '@/types/second-brain';
+import { NotionConnection } from './notion-connection';
 
 const fmt = (iso: string | null) => iso ? new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso)) : 'Nunca';
 
@@ -24,6 +25,7 @@ export function ConnectionsView() {
   <h1 className="text-2xl font-semibold">Conexiones</h1>
   <p className="mt-1 text-sm text-muted-foreground">Tus fuentes de información, en un solo lugar.</p>
   <ul className="mt-6 grid gap-3">{items.map(c => {
+   if (c.source === 'Notion') return <NotionConnection key={c.id} connection={c} onRefresh={async () => setItems(await getConnections())}/>;
    const soon = c.status === 'Próximamente', on = c.status === 'Conectado';
    return <li key={c.id} className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4">
     <div className="min-w-0 flex-1">
