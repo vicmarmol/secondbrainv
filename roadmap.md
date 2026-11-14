@@ -20,6 +20,6 @@
 - [x] Verificar reglas y sincronización desde la cuenta con sesión.
 
 ## Chat con documentos reales
-- [ ] Búsqueda española ponderada, seis resultados y fragmentos de 3000 caracteres.
-- [ ] Respuestas de Lovable AI, citas, contradicciones y guardado por usuario.
-- [ ] Verificar preguntas reales, errores y documentos enviados al modelo.
+- [x] Búsqueda española ponderada, seis resultados y fragmentos de 3000 caracteres.
+- [x] Respuestas de Lovable AI, citas, contradicciones y guardado por usuario.
+- [x] Verificar preguntas reales, errores y documentos enviados al modelo.
