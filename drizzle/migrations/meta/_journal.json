@@ -43,6 +43,13 @@
       "when": 1794655645233,
       "tag": "0005_private_app_user_connections",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794655660471,
+      "tag": "0006_notion_oauth_nonce",
+      "breakpoints": true
     }
   ]
 }

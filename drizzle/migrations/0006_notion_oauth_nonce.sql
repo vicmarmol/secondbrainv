@@ -1,0 +1,1 @@
+ALTER TABLE public.connections ADD COLUMN notion_oauth_nonce text;

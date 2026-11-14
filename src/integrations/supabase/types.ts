@@ -66,6 +66,7 @@ export type Database = {
           id: string
           last_synced_at: string | null
           notion_cursor: Json | null
+          notion_oauth_nonce: string | null
           provider: string
           source: string
           status: Database["public"]["Enums"]["connection_status"]
@@ -77,6 +78,7 @@ export type Database = {
           id?: string
           last_synced_at?: string | null
           notion_cursor?: Json | null
+          notion_oauth_nonce?: string | null
           provider: string
           source?: string
           status?: Database["public"]["Enums"]["connection_status"]
@@ -88,6 +90,7 @@ export type Database = {
           id?: string
           last_synced_at?: string | null
           notion_cursor?: Json | null
+          notion_oauth_nonce?: string | null
           provider?: string
           source?: string
           status?: Database["public"]["Enums"]["connection_status"]
