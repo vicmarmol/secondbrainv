@@ -35,4 +35,4 @@ use the editor.
 - New users get one connections row per source from an `auth.users` trigger; example data is only inserted per user by the `load_sample_data()` RPC (Ajustes), whose documents use `external_id = 'doc-N'` so simulated chat citations resolve by external id.
 - Use the shared SecondBrainApp shell for all content routes; the chat is the implemented first stage and the other destinations explicitly represent future stages.
 - Keep all visual tokens and reusable layouts in `src/styles.css`; the light/dark selector switches the document class without external persistence.
-- Notion sync uses authenticated server functions through the official connector gateway, with persisted short steps in sync_runs and a per-user continuation cursor in connections; this keeps credentials server-only and avoids long single invocations.
+- Notion sync uses authenticated TanStack server functions with persisted short steps in sync_runs and a per-user continuation cursor in connections; this keeps credentials server-only and avoids long single invocations.
