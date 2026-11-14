@@ -1,4 +1,5 @@
 import { beginNotionSync, getNotionState, stepNotionSync } from '@/lib/notion.functions';
+export { startNotionConnect, completeNotionConnect, disconnectNotion } from '@/lib/notion-oauth.functions';
 
 export type NotionState = Awaited<ReturnType<typeof getNotionState>>;
 export type NotionProgress = Awaited<ReturnType<typeof stepNotionSync>>;
