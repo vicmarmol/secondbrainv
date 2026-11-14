@@ -13,3 +13,8 @@
 ## Cuentas
 - [x] Inicio de sesión, registro con confirmación y Google; páginas protegidas y cerrar sesión.
 - [x] Datos por usuario con seguridad por filas; datos de ejemplo bajo demanda en Ajustes.
+
+## Notion
+- [ ] Vincular el conector oficial de Notion.
+- [ ] Sincronización real paginada, huellas, exclusiones e historial por usuario.
+- [ ] Verificar reglas y sincronización desde la cuenta con sesión.
