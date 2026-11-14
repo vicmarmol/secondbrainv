@@ -16,6 +16,7 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAjustesRouteImport } from './routes/_authenticated/ajustes'
 import { Route as AuthenticatedBibliotecaRouteImport } from './routes/_authenticated/biblioteca'
 import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
+import { Route as ApiChatAnswerRouteImport } from './routes/api/chat-answer'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -51,6 +52,11 @@ const AuthenticatedConexionesRoute = AuthenticatedConexionesRouteImport.update({
   path: '/conexiones',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiChatAnswerRoute = ApiChatAnswerRouteImport.update({
+  id: '/api/chat-answer',
+  path: '/api/chat-answer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/ajustes': typeof AuthenticatedAjustesRoute
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
+  '/api/chat-answer': typeof ApiChatAnswerRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/ajustes': typeof AuthenticatedAjustesRoute
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
+  '/api/chat-answer': typeof ApiChatAnswerRoute
   '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
@@ -76,14 +84,28 @@ export interface FileRoutesById {
   '/_authenticated/ajustes': typeof AuthenticatedAjustesRoute
   '/_authenticated/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/_authenticated/conexiones': typeof AuthenticatedConexionesRoute
+  '/api/chat-answer': typeof ApiChatAnswerRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/registro' | '/ajustes' | '/biblioteca' | '/conexiones'
+    | '/'
+    | '/auth'
+    | '/registro'
+    | '/ajustes'
+    | '/biblioteca'
+    | '/conexiones'
+    | '/api/chat-answer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth' | '/registro' | '/ajustes' | '/biblioteca' | '/conexiones' | '/'
+  to:
+    | '/auth'
+    | '/registro'
+    | '/ajustes'
+    | '/biblioteca'
+    | '/conexiones'
+    | '/api/chat-answer'
+    | '/'
   id:
     | '__root__'
     | '/_authenticated'
@@ -92,6 +114,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ajustes'
     | '/_authenticated/biblioteca'
     | '/_authenticated/conexiones'
+    | '/api/chat-answer'
     | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
@@ -99,6 +122,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   RegistroRoute: typeof RegistroRoute
+  ApiChatAnswerRoute: typeof ApiChatAnswerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConexionesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/chat-answer': {
+      id: '/api/chat-answer'
+      path: '/api/chat-answer'
+      fullPath: '/api/chat-answer'
+      preLoaderRoute: typeof ApiChatAnswerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -176,6 +207,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   RegistroRoute: RegistroRoute,
+  ApiChatAnswerRoute: ApiChatAnswerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

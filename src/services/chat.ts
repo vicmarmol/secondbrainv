@@ -23,9 +23,8 @@ export async function getConversations(): Promise<Conversation[]> {
  if (convs.error || msgs.error) throw new Error('No se han podido cargar las conversaciones.');
  const ids = [...new Set((msgs.data ?? []).flatMap(m => ((m.citations as StoredCitation[]) ?? []).map(c => c.document_id)))];
  const docs = ids.length ? (await supabase.from('documents').select('*').or(`id.in.(${ids.join(',')}),external_id.in.(${ids.join(',')})`)).data ?? [] : [];
- // Simulated answers cite example documents by their external id.
  const byId = new Map(docs.flatMap(d => [[d.id, toDocument(d)], [d.external_id, toDocument(d)]] as const));
- return (convs.data ?? []).map(c => ({ id: c.id, title: c.title, group: groupFor(c.updated_at), updatedAt: c.updated_at, messages: (msgs.data ?? []).filter(m => m.conversation_id === c.id).map(m => ({ id: m.id, role: m.role, content: m.content, citations: ((m.citations as StoredCitation[]) ?? []).flatMap(s => { const document = byId.get(s.document_id); return document ? [{ document, chunkId: s.chunk_id ?? document.chunks[0]?.id ?? '' }] : []; }) })) }));
+ return (convs.data ?? []).map(c => ({ id: c.id, title: c.title, group: groupFor(c.updated_at), updatedAt: c.updated_at, messages: (msgs.data ?? []).filter(m => m.conversation_id === c.id).map(m => ({ id: m.id, role: m.role, content: m.content, ...readMetadata(m.answer_metadata), citations: ((m.citations as StoredCitation[]) ?? []).flatMap(s => { const document = byId.get(s.document_id); return document ? [{ document, chunkId: s.chunk_id ?? document.chunks[0]?.id ?? '' }] : []; }) })) }));
 }
 
 export async function createConversation(id: string, title: string) {
@@ -49,4 +48,9 @@ export async function renameConversation(id: string, title: string) {
 export async function deleteConversation(id: string) {
  const { error } = await supabase.from('conversations').delete().eq('id', id);
  if (error) throw new Error('No se ha podido borrar la conversación.');
+}
+
+function readMetadata(value: Json): Pick<Message, 'retrieved' | 'conflicts' | 'difference' | 'kind'> {
+ const meta = value as { retrieved?: Message['retrieved']; conflicts?: Message['conflicts']; difference?: string };
+ return { retrieved: meta?.retrieved ?? [], conflicts: meta?.conflicts ?? [], difference: meta?.difference ?? '', kind: (meta?.conflicts?.length ?? 0) >= 2 ? 'conflict' : undefined };
 }

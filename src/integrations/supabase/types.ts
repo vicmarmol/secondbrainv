@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_ai_access: {
+        Row: {
+          denial: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          denial: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          denial?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       connections: {
         Row: {
           created_at: string
@@ -83,6 +101,7 @@ export type Database = {
           external_id: string
           external_url: string
           id: string
+          search_vector: unknown
           source: Database["public"]["Enums"]["document_source"]
           source_modified_at: string | null
           status: Database["public"]["Enums"]["document_status"]
@@ -101,6 +120,7 @@ export type Database = {
           external_id: string
           external_url: string
           id?: string
+          search_vector?: unknown
           source: Database["public"]["Enums"]["document_source"]
           source_modified_at?: string | null
           status?: Database["public"]["Enums"]["document_status"]
@@ -119,6 +139,7 @@ export type Database = {
           external_id?: string
           external_url?: string
           id?: string
+          search_vector?: unknown
           source?: Database["public"]["Enums"]["document_source"]
           source_modified_at?: string | null
           status?: Database["public"]["Enums"]["document_status"]
@@ -133,6 +154,7 @@ export type Database = {
       }
       messages: {
         Row: {
+          answer_metadata: Json
           citations: Json
           content: string
           conversation_id: string
@@ -142,6 +164,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          answer_metadata?: Json
           citations?: Json
           content: string
           conversation_id: string
@@ -151,6 +174,7 @@ export type Database = {
           user_id?: string
         }
         Update: {
+          answer_metadata?: Json
           citations?: Json
           content?: string
           conversation_id?: string
@@ -222,6 +246,17 @@ export type Database = {
     }
     Functions: {
       load_sample_data: { Args: never; Returns: undefined }
+      search_chat_documents: {
+        Args: { question: string }
+        Returns: {
+          document_id: string
+          excerpt: string
+          modified_at: string
+          rank: number
+          source: Database["public"]["Enums"]["document_source"]
+          title: string
+        }[]
+      }
     }
     Enums: {
       connection_status: "conectado" | "desconectado" | "proximamente"

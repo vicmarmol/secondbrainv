@@ -18,3 +18,8 @@
 - [x] Usar el conector oficial de Notion (sustituye la petición de API directa).
 - [x] Sincronización real paginada, huellas, exclusiones e historial por usuario.
 - [x] Verificar reglas y sincronización desde la cuenta con sesión.
+
+## Chat con documentos reales
+- [x] Búsqueda española ponderada, seis resultados y fragmentos de 3000 caracteres.
+- [x] Respuestas de Lovable AI, citas, contradicciones y guardado por usuario.
+- [x] Verificar preguntas reales, errores y documentos enviados al modelo.

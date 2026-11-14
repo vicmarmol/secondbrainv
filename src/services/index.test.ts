@@ -1,12 +1,9 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { sendMessage, getRides } from './index';
-vi.mock('@/integrations/supabase/client', () => ({ supabase: {} }));
-async function resolve<T>(promise: Promise<T>) { await vi.runAllTimersAsync(); return promise; }
-afterEach(() => vi.useRealTimers());
-describe('Simulated Second Brain responses', () => {
- it('MVP preserves both conflicting sources and their dates', async () => { vi.useFakeTimers(); const answer = await resolve(sendMessage('¿Qué es un MVP?')); expect(answer.kind).toBe('conflict'); expect(answer.citations.map(c => [c.document.source, c.document.date])).toEqual([['Drive','2026-10-30'],['Notion','2026-10-13']]); });
- it('meeting references yesterday and includes three decisions and two tasks', async () => { vi.useFakeTimers(); const answer = await resolve(sendMessage('Última reunión')); expect(answer.citations[0]?.document.date).toBe('2026-11-12'); expect(answer.content).toContain('3. Posponer'); expect(answer.content).toContain('Laura:'); expect(answer.content).toContain('Pablo:'); expect(answer.citations[0]?.document.source).toBe('Granola'); });
- it('cycling compares the same two weeks and cites Garmin', async () => { vi.useFakeTimers(); const answer = await resolve(sendMessage('Mis salidas en bici')); const rows = await resolve(getRides()); expect(answer.kind).toBe('rides'); expect(answer.citations[0]?.document.source).toBe('Garmin'); expect(rows.map(r => r.current)).toEqual([112,138]); expect(rows.map(r => r.previous)).toEqual([86,104]); });
- it('pricing cites both the email and meeting', async () => { vi.useFakeTimers(); const answer = await resolve(sendMessage('¿Con quién hablé sobre pricing?')); expect(answer.citations.map(c => c.document.source)).toEqual(['Gmail','Granola']); expect(answer.content).toContain('Marta Ruiz'); expect(answer.content).toContain('Diego Martín'); });
- it('unmatched questions return no invented citations', async () => { vi.useFakeTimers(); const answer = await resolve(sendMessage('Receta de gazpacho')); expect(answer.citations).toEqual([]); expect(answer.kind).toBeUndefined(); });
+import { describe, it, expect } from 'vitest';
+import { boundedRetrieval, validateAnswer } from '@/lib/chat-answer';
+describe('Real document answers', () => {
+ it('retrieval is limited to six documents', () => expect(boundedRetrieval(Array.from({ length: 9 }, () => ({ excerpt: 'texto' })))).toHaveLength(6));
+ it('each excerpt is limited to 3000 characters', () => expect(boundedRetrieval([{ excerpt: 'a'.repeat(4000) }])[0]?.excerpt).toHaveLength(3000));
+ it('rejects citations outside the retrieved set', () => expect(() => validateAnswer({ text: 'Respuesta', document_ids: ['other'], conflicts: [], difference: '' }, ['mine'])).toThrow());
+ it('does not accept empty answers', () => expect(() => validateAnswer({ text: ' ', document_ids: [], conflicts: [], difference: '' }, [])).toThrow());
+ it('includes both conflicting source ids', () => expect(validateAnswer({ text: 'Dos versiones', document_ids: ['a'], conflicts: [{ document_id: 'a', version: 'Uno' }, { document_id: 'b', version: 'Dos' }], difference: 'Difieren' }, ['a','b']).document_ids).toEqual(['a','b']));
 });
