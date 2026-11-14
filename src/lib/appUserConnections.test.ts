@@ -4,7 +4,7 @@ vi.mock('./connectionKeyCrypto.server', () => ({ encryptConnectionKey: (s: strin
 vi.mock('@/integrations/supabase/client.server', () => ({ supabaseAdmin: { from: () => ({
  select: () => {
   const filters: Record<string, string> = {};
-  const query = { eq: (k: string, v: string) => { filters[k] = v; return query; }, maybeSingle: async () => ({ data: rows.has(`${filters.user_id}:${filters.connector_id}`) ? { connection_key_ciphertext: rows.get(`${filters.user_id}:${filters.connector_id}`) } : null, error: null }) };
+  const query = { eq: (k: string, v: string) => { filters[k] = v; return query; }, maybeSingle: async () => ({ data: rows.has(`${filters['user_id']}:${filters['connector_id']}`) ? { connection_key_ciphertext: rows.get(`${filters['user_id']}:${filters['connector_id']}`) } : null, error: null }) };
   return query;
  },
  upsert: async (row: { user_id: string; connector_id: string; connection_key_ciphertext: string }) => { rows.set(`${row.user_id}:${row.connector_id}`, row.connection_key_ciphertext); return { error: null }; },
