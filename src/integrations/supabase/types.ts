@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_user_connections: {
+        Row: {
+          connection_key_ciphertext: string
+          connector_id: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connection_key_ciphertext: string
+          connector_id: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connection_key_ciphertext?: string
+          connector_id?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_ai_access: {
         Row: {
           denial: Json
@@ -39,6 +66,7 @@ export type Database = {
           id: string
           last_synced_at: string | null
           notion_cursor: Json | null
+          notion_oauth_nonce: string | null
           provider: string
           source: string
           status: Database["public"]["Enums"]["connection_status"]
@@ -50,6 +78,7 @@ export type Database = {
           id?: string
           last_synced_at?: string | null
           notion_cursor?: Json | null
+          notion_oauth_nonce?: string | null
           provider: string
           source?: string
           status?: Database["public"]["Enums"]["connection_status"]
@@ -61,6 +90,7 @@ export type Database = {
           id?: string
           last_synced_at?: string | null
           notion_cursor?: Json | null
+          notion_oauth_nonce?: string | null
           provider?: string
           source?: string
           status?: Database["public"]["Enums"]["connection_status"]

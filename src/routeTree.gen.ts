@@ -17,6 +17,7 @@ import { Route as AuthenticatedAjustesRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedBibliotecaRouteImport } from './routes/_authenticated/biblioteca'
 import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
 import { Route as ApiChatAnswerRouteImport } from './routes/api/chat-answer'
+import { Route as ApiPublicOauthNotionReturnRouteImport } from './routes/api/public/oauth/notion/return'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -57,6 +58,12 @@ const ApiChatAnswerRoute = ApiChatAnswerRouteImport.update({
   path: '/api/chat-answer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOauthNotionReturnRoute =
+  ApiPublicOauthNotionReturnRouteImport.update({
+    id: '/api/public/oauth/notion/return',
+    path: '/api/public/oauth/notion/return',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
+  '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -75,6 +83,7 @@ export interface FileRoutesByTo {
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,6 +95,7 @@ export interface FileRoutesById {
   '/_authenticated/conexiones': typeof AuthenticatedConexionesRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/biblioteca'
     | '/conexiones'
     | '/api/chat-answer'
+    | '/api/public/oauth/notion/return'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/conexiones'
     | '/api/chat-answer'
     | '/'
+    | '/api/public/oauth/notion/return'
   id:
     | '__root__'
     | '/_authenticated'
@@ -116,6 +128,7 @@ export interface FileRouteTypes {
     | '/_authenticated/conexiones'
     | '/api/chat-answer'
     | '/_authenticated/'
+    | '/api/public/oauth/notion/return'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -123,6 +136,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   RegistroRoute: typeof RegistroRoute
   ApiChatAnswerRoute: typeof ApiChatAnswerRoute
+  ApiPublicOauthNotionReturnRoute: typeof ApiPublicOauthNotionReturnRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -183,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatAnswerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/oauth/notion/return': {
+      id: '/api/public/oauth/notion/return'
+      path: '/api/public/oauth/notion/return'
+      fullPath: '/api/public/oauth/notion/return'
+      preLoaderRoute: typeof ApiPublicOauthNotionReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -208,6 +229,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   RegistroRoute: RegistroRoute,
   ApiChatAnswerRoute: ApiChatAnswerRoute,
+  ApiPublicOauthNotionReturnRoute: ApiPublicOauthNotionReturnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

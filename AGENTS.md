@@ -35,6 +35,6 @@ use the editor.
 - New users get one connections row per source from an `auth.users` trigger; example data is only inserted per user by the `load_sample_data()` RPC (Ajustes), and never influence production chat responses unless they are explicitly loaded.
 - Use the shared SecondBrainApp shell for all content routes; the chat is the implemented first stage and the other destinations explicitly represent future stages.
 - Keep all visual tokens and reusable layouts in `src/styles.css`; the light/dark selector switches the document class without external persistence.
-- Notion sync uses authenticated TanStack server functions with persisted short steps in sync_runs and a per-user continuation cursor in connections; this keeps credentials server-only and avoids long single invocations.
+- Notion uses App User Connector OAuth through authenticated server functions, a one-time user-bound nonce, and encrypted server-only connection keys keyed by user/connector; never fall back to project provider credentials. Sync uses short persisted steps and per-user cursors to avoid long invocations.
 
 - Chat answers use the authenticated `/api/chat-answer` TanStack server route, Spanish invoker full-text retrieval and streamed structured Lovable AI Responses; persist retrieved excerpts with each answer so users can audit the exact context without exposing other users’ documents.
