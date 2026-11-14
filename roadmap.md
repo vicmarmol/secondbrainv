@@ -27,3 +27,8 @@
 - [x] Búsqueda española ponderada, seis resultados y fragmentos de 3000 caracteres.
 - [x] Respuestas de Lovable AI, citas, contradicciones y guardado por usuario.
 - [x] Verificar preguntas reales, errores y documentos enviados al modelo.
+
+## Pagos
+- [ ] Habilitar Stripe con confirmación del propietario.
+- [ ] Configurar precio y suscripción; prueba gratuita de 7 días y bloqueo al terminar sin pago.
+- [ ] Verificar pago y control de acceso por usuario.
