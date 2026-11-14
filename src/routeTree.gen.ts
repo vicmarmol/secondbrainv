@@ -16,6 +16,7 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAjustesRouteImport } from './routes/_authenticated/ajustes'
 import { Route as AuthenticatedBibliotecaRouteImport } from './routes/_authenticated/biblioteca'
 import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
+import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
 import { Route as ApiChatAnswerRouteImport } from './routes/api/chat-answer'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicOauthNotionReturnRouteImport } from './routes/api/public/oauth/notion/return'
@@ -54,6 +55,12 @@ const AuthenticatedConexionesRoute = AuthenticatedConexionesRouteImport.update({
   path: '/conexiones',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSuscripcionRoute =
+  AuthenticatedSuscripcionRouteImport.update({
+    id: '/suscripcion',
+    path: '/suscripcion',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiChatAnswerRoute = ApiChatAnswerRouteImport.update({
   id: '/api/chat-answer',
   path: '/api/chat-answer',
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/ajustes': typeof AuthenticatedAjustesRoute
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
+  '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
@@ -89,6 +97,7 @@ export interface FileRoutesByTo {
   '/ajustes': typeof AuthenticatedAjustesRoute
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
+  '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/': typeof AuthenticatedIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -102,6 +111,7 @@ export interface FileRoutesById {
   '/_authenticated/ajustes': typeof AuthenticatedAjustesRoute
   '/_authenticated/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/_authenticated/conexiones': typeof AuthenticatedConexionesRoute
+  '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/ajustes'
     | '/biblioteca'
     | '/conexiones'
+    | '/suscripcion'
     | '/api/chat-answer'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/ajustes'
     | '/biblioteca'
     | '/conexiones'
+    | '/suscripcion'
     | '/api/chat-answer'
     | '/'
     | '/api/public/payments/webhook'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ajustes'
     | '/_authenticated/biblioteca'
     | '/_authenticated/conexiones'
+    | '/_authenticated/suscripcion'
     | '/api/chat-answer'
     | '/_authenticated/'
     | '/api/public/payments/webhook'
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConexionesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/suscripcion': {
+      id: '/_authenticated/suscripcion'
+      path: '/suscripcion'
+      fullPath: '/suscripcion'
+      preLoaderRoute: typeof AuthenticatedSuscripcionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/chat-answer': {
       id: '/api/chat-answer'
       path: '/api/chat-answer'
@@ -232,6 +252,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAjustesRoute: typeof AuthenticatedAjustesRoute
   AuthenticatedBibliotecaRoute: typeof AuthenticatedBibliotecaRoute
   AuthenticatedConexionesRoute: typeof AuthenticatedConexionesRoute
+  AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -239,6 +260,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAjustesRoute: AuthenticatedAjustesRoute,
   AuthenticatedBibliotecaRoute: AuthenticatedBibliotecaRoute,
   AuthenticatedConexionesRoute: AuthenticatedConexionesRoute,
+  AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
