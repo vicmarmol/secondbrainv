@@ -30,7 +30,8 @@
 
 ## Pagos
 - [x] Habilitar Stripe con confirmación del propietario.
-- [ ] Configurar precio y suscripción; prueba gratuita de 7 días y bloqueo al terminar sin pago.
-- [ ] Verificar pago y control de acceso por usuario.
+- [x] Configurar precio y suscripción; prueba gratuita de 7 días y bloqueo al terminar sin pago.
+- [x] Verificar reglas de acceso, aislamiento del modo de prueba y formulario en escritorio/móvil.
+- [ ] Completar compra de prueba y comprobar confirmación: envío automatizado no finalizado; requiere prueba manual.
 
-- [ ] Explicar cómo probar un pago sin dinero real.
+- [x] Explicar cómo probar un pago sin dinero real.
