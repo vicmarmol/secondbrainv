@@ -27,7 +27,7 @@ export const beginNotionSync = createServerFn({ method: 'POST' }).middleware([re
  const existing = checked(await db.from('sync_runs').select('*').eq('connection_id', connection.id).eq('user_id', userId).eq('status', 'en_curso').maybeSingle());
  if (existing) return existing.id;
  const discovery = connection.notion_cursor ? discoverySchema.parse(connection.notion_cursor) : emptyDiscovery();
- const run = checked(await db.from('sync_runs').insert({ user_id: userId, connection_id: connection.id, status: 'en_curso', progress: { discovery, processed: 0, current: null } }).select('id').single());
+ const run = checked(await db.from('sync_runs').insert({ user_id: userId, connection_id: connection.id, status: 'en_curso', progress: { discovery, processed: 0, current: null } as unknown as Json }).select('id').single());
  if (!run) throw new Error('No se ha podido iniciar la sincronización.');
  return run.id;
 });
