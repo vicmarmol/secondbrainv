@@ -1,17 +1,20 @@
+import { getConnectionKeyForUser } from './appUserConnections.server';
+import { callAsAppUser, appUserReconnectRequired } from '@/integrations/lovable/appUserConnector';
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export class NotionError extends Error {}
-export function notionConfigured() { return !!process.env['NOTION_API_KEY'] && !!process.env['LOVABLE_API_KEY']; }
+export class NotionReconnectError extends NotionError {}
+export async function notionConfigured(userId: string) { return !!await getConnectionKeyForUser(userId, 'notion'); }
 type NotionResponse = { results: any[]; has_more: boolean; next_cursor: string | null };
-export async function notionRequest(path: string, body?: object): Promise<NotionResponse> {
- const key = process.env['NOTION_API_KEY'];
- const gatewayKey = process.env['LOVABLE_API_KEY'];
- if (!key || !gatewayKey) throw new NotionError('Notion no está configurado. Vincula el conector oficial en Lovable.');
+export async function notionRequest(userId: string, path: string, body?: object): Promise<NotionResponse> {
+ const key = await getConnectionKeyForUser(userId, 'notion');
+ if (!key) throw new NotionError('Conecta tu cuenta de Notion antes de sincronizar.');
  for (let attempt = 0; attempt < 5; attempt++) {
   await wait(350);
-  const response = await fetch(`https://connector-gateway.lovable.dev/notion/v1${path}`, {
-   method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${gatewayKey}`, 'X-Connection-Api-Key': key, 'Notion-Version': '2025-09-03', 'Content-Type': 'application/json' },
+   const response = await callAsAppUser({ gatewayBaseUrl: 'https://connector-gateway.lovable.dev', connectorId: 'notion', connectionAPIKey: key, path: `/v1${path}`, init: {
+    method: body ? 'POST' : 'GET', headers: { 'Notion-Version': '2025-09-03', 'Content-Type': 'application/json' },
    ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(20000),
-  });
+   } });
+   if (await appUserReconnectRequired(response)) throw new NotionReconnectError('Tu acceso a Notion necesita renovarse. Vuelve a conectar.');
   if (response.status === 429 && attempt < 4) {
    await response.text();
    const seconds = Number(response.headers.get('Retry-After') ?? 2 ** attempt);
