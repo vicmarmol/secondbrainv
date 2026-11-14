@@ -4,7 +4,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { z } from 'zod';
 import type { Database, Json } from '@/integrations/supabase/types';
 import { createLovableAiGatewayRunIdFetch } from './ai/run-id.ts';
-import { answerSchema, validateAnswer } from './chat-answer';
+import { answerSchema, validateAnswer, boundedRetrieval } from './chat-answer';
 
 const inputSchema = z.object({ conversationId: z.string().uuid(), message: z.string().trim().min(1).max(20000), messageId: z.string().uuid() });
 export async function handleChatAnswer(request: Request) {
@@ -24,7 +24,7 @@ export async function handleChatAnswer(request: Request) {
  if (blocked) return Response.json({ error: (blocked.denial as { message?: string }).message ?? 'El acceso a Lovable AI está bloqueado. Debe restablecerse antes de iniciar otra consulta.' }, { status: 403 });
  const { data: documents, error: searchError } = await db.rpc('search_chat_documents', { question: message });
  if (searchError) return Response.json({ error: 'No se ha podido buscar en tus documentos.' }, { status: 500 });
- const docs = documents ?? [];
+ const docs = boundedRetrieval(documents ?? []);
  const { count } = await db.from('messages').select('id', { count: 'exact', head: true }).eq('conversation_id', conversationId);
  const { error: userError } = await db.from('messages').insert({ id: messageId, conversation_id: conversationId, role: 'user', content: message, citations: [] });
  if (userError) return Response.json({ error: 'No se ha podido guardar tu pregunta.' }, { status: 500 });
@@ -61,7 +61,7 @@ export async function handleChatAnswer(request: Request) {
    emit({ type: 'done', id: saved.id });
   } catch (error) {
    const status = upstreamError?.status ?? (request.signal.aborted ? 499 : 500);
-   const message = upstreamError?.message ?? (error instanceof Error ? error.message : 'No se ha podido generar la respuesta.');
+   const message = upstreamError?.message ?? (request.signal.aborted ? 'La respuesta se ha detenido.' : 'No se ha podido generar o guardar la respuesta. No se ha guardado una respuesta vacía.');
    if (status === 403 && !['credit_limit_reached','model_requires_retention_consent','model_vendor_not_enabled','provider_not_available_in_region'].includes(upstreamError?.type ?? '')) await db.from('chat_ai_access').upsert({ user_id: auth.user.id, denial: { message, status }, updated_at: new Date().toISOString() });
    emit({ type: 'error', status, error: message });
   } finally { controller.close(); }
