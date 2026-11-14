@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_trials: {
+        Row: {
+          ends_at: string
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          ends_at?: string
+          started_at?: string
+          user_id?: string
+        }
+        Update: {
+          ends_at?: string
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       app_user_connections: {
         Row: {
           connection_key_ciphertext: string
@@ -223,6 +241,54 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          environment: string
+          id: string
+          price_id: string
+          product_id: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          environment: string
+          id?: string
+          price_id: string
+          product_id: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          environment?: string
+          id?: string
+          price_id?: string
+          product_id?: string
+          status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       sync_runs: {
         Row: {
           connection_id: string
@@ -275,6 +341,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ensure_app_trial: {
+        Args: never
+        Returns: {
+          ends_at: string
+          started_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "app_trials"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      has_app_access: { Args: never; Returns: boolean }
       load_sample_data: { Args: never; Returns: undefined }
       search_chat_documents: {
         Args: { question: string }
