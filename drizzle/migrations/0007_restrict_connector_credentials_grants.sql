@@ -1,0 +1,1 @@
+REVOKE ALL ON public.app_user_connections FROM anon, authenticated;

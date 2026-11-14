@@ -50,6 +50,13 @@
       "when": 1794655660471,
       "tag": "0006_notion_oauth_nonce",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794655815504,
+      "tag": "0007_restrict_connector_credentials_grants",
+      "breakpoints": true
     }
   ]
 }
