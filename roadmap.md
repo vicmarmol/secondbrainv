@@ -16,5 +16,5 @@
 
 ## Notion
 - [x] Usar el conector oficial de Notion (sustituye la petición de API directa).
-- [ ] Sincronización real paginada, huellas, exclusiones e historial por usuario.
-- [ ] Verificar reglas y sincronización desde la cuenta con sesión.
+- [x] Sincronización real paginada, huellas, exclusiones e historial por usuario.
+- [x] Verificar reglas y sincronización desde la cuenta con sesión.
