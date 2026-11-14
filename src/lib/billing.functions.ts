@@ -18,13 +18,13 @@ async function resolveOrCreateCustomer(
  if (options.userId && !/^[a-zA-Z0-9_-]+$/.test(options.userId)) throw new Error('Invalid userId');
  if (options.userId) {
   const found = await stripe.customers.search({ query: `metadata['userId']:'${options.userId}'`, limit: 1 });
-  if (found.data.length) return found.data[0].id;
+  const first = found.data[0]; if (first) return first.id;
  }
  if (options.email) {
   const existing = await stripe.customers.list({ email: options.email, limit: 1 });
-  if (existing.data.length) {
-   const customer = existing.data[0];
-   if (options.userId && customer.metadata?.userId !== options.userId) await stripe.customers.update(customer.id, { metadata: { ...customer.metadata, userId: options.userId } });
+  const customer = existing.data[0];
+  if (customer) {
+   if (options.userId && customer.metadata?.['userId'] !== options.userId) await stripe.customers.update(customer.id, { metadata: { ...customer.metadata, userId: options.userId } });
    return customer.id;
   }
  }
@@ -37,7 +37,7 @@ export const startSubscriptionCheckout = createServerFn({ method: 'POST' }).midd
   const stripe = createStripeClient(data.environment);
   const { data: auth, error } = await context.supabase.auth.getUser();
   if (error || !auth.user) throw new Error('Inicia sesión de nuevo.');
-  const customer = await resolveOrCreateCustomer(stripe, { userId: context.userId, email: auth.user.email });
+  const customer = await resolveOrCreateCustomer(stripe, { userId: context.userId, ...(auth.user.email ? { email: auth.user.email } : {}) });
   const existing = await stripe.subscriptions.list({ customer, status: 'all', limit: 100 });
   if (existing.data.some(sub => ['active','trialing','past_due','incomplete'].includes(sub.status))) throw new Error('Ya tienes una suscripción o un pago pendiente. Gestiona tu suscripción en lugar de pagar otra vez.');
   const prices = await stripe.prices.list({ lookup_keys: ['second_brain_monthly'], active: true, limit: 1 });
@@ -59,10 +59,10 @@ export const confirmSubscriptionCheckout = createServerFn({ method: 'POST' }).mi
  try {
   const stripe = createStripeClient(data.environment);
   const session = await stripe.checkout.sessions.retrieve(data.sessionId);
-  if (session.metadata?.userId !== context.userId) throw new Error('Este pago no pertenece a tu cuenta.');
+  if (session.metadata?.['userId'] !== context.userId) throw new Error('Este pago no pertenece a tu cuenta.');
   if (session.status !== 'complete' || session.payment_status !== 'paid' || !session.subscription) return { pending: true };
   const subscription = await stripe.subscriptions.retrieve(typeof session.subscription === 'string' ? session.subscription : session.subscription.id);
-  if (subscription.metadata.userId !== context.userId) throw new Error('Suscripción no válida.');
+  if (subscription.metadata['userId'] !== context.userId) throw new Error('Suscripción no válida.');
   const { syncSubscription } = await import('./billing.server');
   await syncSubscription(subscription, data.environment);
   return { pending: false };

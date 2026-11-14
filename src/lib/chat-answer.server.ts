@@ -15,6 +15,8 @@ export async function handleChatAnswer(request: Request) {
  const db = createClient<Database>(url, key, { auth: { persistSession: false, autoRefreshToken: false }, global: { headers: { Authorization: bearer } } });
  const { data: auth, error: authError } = await db.auth.getUser(bearer.slice(7));
  if (authError || !auth.user) return Response.json({ error: 'Tu sesión ha caducado. Inicia sesión de nuevo.' }, { status: 401 });
+ const { data: hasAccess, error: accessError } = await db.rpc('has_app_access');
+ if (accessError || !hasAccess) return Response.json({ error: 'Tu prueba ha terminado. Activa la suscripción para continuar.' }, { status: 403 });
  const parsed = inputSchema.safeParse(await request.json().catch(() => null));
  if (!parsed.success) return Response.json({ error: 'La pregunta o conversación no es válida.' }, { status: 400 });
  const { conversationId, message, messageId } = parsed.data;

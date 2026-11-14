@@ -29,6 +29,8 @@
 - [x] Verificar preguntas reales, errores y documentos enviados al modelo.
 
 ## Pagos
-- [ ] Habilitar Stripe con confirmación del propietario.
+- [x] Habilitar Stripe con confirmación del propietario.
 - [ ] Configurar precio y suscripción; prueba gratuita de 7 días y bloqueo al terminar sin pago.
 - [ ] Verificar pago y control de acceso por usuario.
+
+- [ ] Explicar cómo probar un pago sin dinero real.

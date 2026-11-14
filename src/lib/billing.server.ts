@@ -7,12 +7,12 @@ export async function requireAppAccess(db: SupabaseClient<Database>) {
  if (error || !data) throw new Error('Tu prueba ha terminado. Activa la suscripción para continuar.');
 }
 export async function syncSubscription(subscription: Stripe.Subscription, env: StripeEnv) {
- const userId = subscription.metadata.userId;
+ const userId = subscription.metadata['userId'];
  const item = subscription.items.data[0];
  if (!userId || !/^[0-9a-f-]{36}$/i.test(userId) || !item) throw new Error('Missing subscription owner');
  const stripe = createStripeClient(env);
  const price = await stripe.prices.retrieve(item.price.id);
- const plan = price.lookup_key ?? price.metadata.lovable_external_id;
+ const plan = price.lookup_key ?? price.metadata['lovable_external_id'];
  if (plan !== 'second_brain_monthly') return;
  const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
  const { data: user, error: userError } = await supabaseAdmin.auth.admin.getUserById(userId);
