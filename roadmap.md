@@ -15,7 +15,6 @@
 - [x] Datos por usuario con seguridad por filas; datos de ejemplo bajo demanda en Ajustes.
 
 ## Notion
-- [ ] Usar la API REST directa con el secreto NOTION_TOKEN, sin conector oficial.
-- [ ] Explicar el orden y la finalidad de los endpoints de Notion.
-- [ ] Sincronización real paginada, huellas, exclusiones e historial por usuario.
-- [ ] Verificar reglas y sincronización desde la cuenta con sesión.
+- [x] Usar el conector oficial de Notion (sustituye la petición de API directa).
+- [x] Sincronización real paginada, huellas, exclusiones e historial por usuario.
+- [x] Verificar reglas y sincronización desde la cuenta con sesión.
