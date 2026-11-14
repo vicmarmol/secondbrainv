@@ -17,6 +17,7 @@ import { Route as AuthenticatedAjustesRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedBibliotecaRouteImport } from './routes/_authenticated/biblioteca'
 import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
 import { Route as ApiChatAnswerRouteImport } from './routes/api/chat-answer'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicOauthNotionReturnRouteImport } from './routes/api/public/oauth/notion/return'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -58,6 +59,12 @@ const ApiChatAnswerRoute = ApiChatAnswerRouteImport.update({
   path: '/api/chat-answer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicOauthNotionReturnRoute =
   ApiPublicOauthNotionReturnRouteImport.update({
     id: '/api/public/oauth/notion/return',
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
 export interface FileRoutesByTo {
@@ -83,6 +91,7 @@ export interface FileRoutesByTo {
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
 export interface FileRoutesById {
@@ -95,6 +104,7 @@ export interface FileRoutesById {
   '/_authenticated/conexiones': typeof AuthenticatedConexionesRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
 export interface FileRouteTypes {
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/biblioteca'
     | '/conexiones'
     | '/api/chat-answer'
+    | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/conexiones'
     | '/api/chat-answer'
     | '/'
+    | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
   id:
     | '__root__'
@@ -128,6 +140,7 @@ export interface FileRouteTypes {
     | '/_authenticated/conexiones'
     | '/api/chat-answer'
     | '/_authenticated/'
+    | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
   fileRoutesById: FileRoutesById
 }
@@ -136,6 +149,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   RegistroRoute: typeof RegistroRoute
   ApiChatAnswerRoute: typeof ApiChatAnswerRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicOauthNotionReturnRoute: typeof ApiPublicOauthNotionReturnRoute
 }
 
@@ -197,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatAnswerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/oauth/notion/return': {
       id: '/api/public/oauth/notion/return'
       path: '/api/public/oauth/notion/return'
@@ -229,6 +250,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   RegistroRoute: RegistroRoute,
   ApiChatAnswerRoute: ApiChatAnswerRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicOauthNotionReturnRoute: ApiPublicOauthNotionReturnRoute,
 }
 export const routeTree = rootRouteImport
