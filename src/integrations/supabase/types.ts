@@ -20,6 +20,7 @@ export type Database = {
           document_count: number
           id: string
           last_synced_at: string | null
+          notion_cursor: Json | null
           provider: string
           source: string
           status: Database["public"]["Enums"]["connection_status"]
@@ -30,6 +31,7 @@ export type Database = {
           document_count?: number
           id?: string
           last_synced_at?: string | null
+          notion_cursor?: Json | null
           provider: string
           source?: string
           status?: Database["public"]["Enums"]["connection_status"]
@@ -40,6 +42,7 @@ export type Database = {
           document_count?: number
           id?: string
           last_synced_at?: string | null
+          notion_cursor?: Json | null
           provider?: string
           source?: string
           status?: Database["public"]["Enums"]["connection_status"]
@@ -169,9 +172,11 @@ export type Database = {
       sync_runs: {
         Row: {
           connection_id: string
+          error_message: string | null
           finished_at: string | null
           id: string
           new_documents: number
+          progress: Json
           started_at: string
           status: Database["public"]["Enums"]["sync_status"]
           updated_documents: number
@@ -179,9 +184,11 @@ export type Database = {
         }
         Insert: {
           connection_id: string
+          error_message?: string | null
           finished_at?: string | null
           id?: string
           new_documents?: number
+          progress?: Json
           started_at?: string
           status?: Database["public"]["Enums"]["sync_status"]
           updated_documents?: number
@@ -189,9 +196,11 @@ export type Database = {
         }
         Update: {
           connection_id?: string
+          error_message?: string | null
           finished_at?: string | null
           id?: string
           new_documents?: number
+          progress?: Json
           started_at?: string
           status?: Database["public"]["Enums"]["sync_status"]
           updated_documents?: number
