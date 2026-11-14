@@ -41,8 +41,12 @@ export const startSubscriptionCheckout = createServerFn({ method: 'POST' }).midd
   const existing = await stripe.subscriptions.list({ customer, status: 'all', limit: 100 });
   if (existing.data.some(sub => ['active','trialing','past_due','incomplete'].includes(sub.status))) throw new Error('Ya tienes una suscripción o un pago pendiente. Gestiona tu suscripción en lugar de pagar otra vez.');
   const prices = await stripe.prices.list({ lookup_keys: ['second_brain_monthly'], active: true, limit: 1 });
-  const price = prices.data[0];
+  let price = prices.data[0];
   if (!price || price.unit_amount !== 500 || price.currency !== 'eur' || price.recurring?.interval !== 'month') throw new Error('El precio mensual no está configurado correctamente.');
+  if (price.tax_behavior !== 'inclusive') {
+   const productId = typeof price.product === 'string' ? price.product : price.product.id;
+   price = await stripe.prices.create({ product: productId, unit_amount: 500, currency: 'eur', recurring: { interval: 'month' }, tax_behavior: 'inclusive', lookup_key: 'second_brain_monthly', transfer_lookup_key: true, metadata: { lovable_external_id: 'second_brain_monthly' } }, { idempotencyKey: `second_brain_monthly_inclusive_${data.environment}` });
+  }
   const origin = new URL(getRequest().url).origin;
   const session = await stripe.checkout.sessions.create({
    customer, line_items: [{ price: price.id, quantity: 1 }], mode: 'subscription',

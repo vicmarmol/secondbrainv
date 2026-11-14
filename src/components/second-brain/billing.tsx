@@ -52,7 +52,7 @@ export function BillingView() {
     <section className="mt-8 border-y border-border py-7">
      <h2 className="text-lg font-medium">Second Brain</h2><div className="mt-3 flex items-baseline gap-2"><span className="text-4xl font-semibold">5 €</span><span className="text-muted-foreground">/ mes</span></div>
      <p className="mt-3 text-sm text-muted-foreground">Chat, biblioteca y conexiones en tu espacio personal.</p>
-     <p className="mt-2 text-xs text-muted-foreground">Renovación mensual. Puedes cancelar antes del siguiente cobro. El total, incluidos los impuestos aplicables, se muestra antes de confirmar.</p>
+     <p className="mt-2 text-xs text-muted-foreground">Impuestos incluidos. Renovación mensual. Puedes cancelar antes del siguiente cobro.</p>
      <div className="mt-6 flex flex-wrap gap-3">{paid || query.data?.subscriptions.length ? <Button onClick={portal} disabled={busy}><ExternalLink/>Gestionar suscripción</Button> : <Button onClick={checkout} disabled={busy || !!clientSecret || !token}><CreditCard/>{busy ? 'Abriendo pago…' : 'Suscribirme'}</Button>}
       {query.data?.subscriptions.length && !paid ? <Button variant="outline" disabled={busy || !!clientSecret || !token} onClick={checkout}><CreditCard/>Reactivar suscripción</Button> : null}
       {query.data?.hasAccess && <Button variant="outline" asChild><Link to="/"><ArrowLeft/>Volver al chat</Link></Button>}
