@@ -15,9 +15,10 @@
 - [x] Datos por usuario con seguridad por filas; datos de ejemplo bajo demanda en Ajustes.
 
 ## Notion
-- [ ] Sustituir acceso global por conexión Notion individual y credenciales cifradas.
-- [ ] Limpiar importaciones y sincronizaciones de Notion de Laura.
-- [ ] Verificar aislamiento y explicar configuración y pruebas con dos usuarios.
+- [x] Sustituir acceso global por conexión Notion individual y credenciales cifradas.
+- [x] Limpiar importaciones y sincronizaciones de Notion de Laura.
+- [x] Verificar claves aisladas, permisos y apertura de autorización; explicar pruebas con dos usuarios.
+- [ ] Completar consentimiento real y sincronización con dos cuentas de Notion: requiere autorización de sus titulares.
 - [x] Usar el conector oficial de Notion (sustituye la petición de API directa).
 - [x] Sincronización real paginada, huellas, exclusiones e historial por usuario.
 - [x] Verificar reglas y sincronización desde la cuenta con sesión.
