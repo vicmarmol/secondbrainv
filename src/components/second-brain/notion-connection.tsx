@@ -66,7 +66,7 @@ export function NotionConnection({ connection, onRefresh }: { connection: Connec
  const connected = connection.status === 'Conectado' && state?.configured === true;
  return <li className="rounded-lg border border-border bg-card p-4">
   <div className="flex flex-wrap items-center gap-4">
-   <div className="min-w-0 flex-1">
+   <div className="min-w-0 basis-full sm:basis-0 sm:flex-1">
      <div className="flex items-center gap-2 font-medium">Notion <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary">{connection.status}</span></div>
     <div className="mt-1 text-xs text-muted-foreground">{connection.documentCount} documentos · Última sincronización: {fmt(connection.lastSync)}</div>
    </div>
