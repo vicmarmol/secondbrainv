@@ -5,6 +5,7 @@ import { z } from 'zod';
 import type { Database, Json } from '@/integrations/supabase/types';
 import { createLovableAiGatewayRunIdFetch } from './ai/run-id.ts';
 import { answerSchema, validateAnswer, boundedRetrieval } from './chat-answer';
+import { extractSearchQuery } from './chat-search.server';
 
 const inputSchema = z.object({ conversationId: z.string().uuid(), message: z.string().trim().min(1).max(20000), messageId: z.string().uuid() });
 export async function handleChatAnswer(request: Request) {
@@ -24,15 +25,18 @@ export async function handleChatAnswer(request: Request) {
  if (!conversation) return Response.json({ error: 'No se ha encontrado tu conversación.' }, { status: 404 });
  const { data: blocked } = await db.from('chat_ai_access').select('denial').eq('user_id', auth.user.id).maybeSingle();
  if (blocked) return Response.json({ error: (blocked.denial as { message?: string }).message ?? 'El acceso a Lovable AI está bloqueado. Debe restablecerse antes de iniciar otra consulta.' }, { status: 403 });
- const { data: documents, error: searchError } = await db.rpc('search_chat_documents', { question: message });
+ const apiKey = process.env['LOVABLE_API_KEY'];
+ if (!apiKey) return Response.json({ error: 'Lovable AI no está configurada.' }, { status: 401 });
+ let searchQuery: string;
+ try { searchQuery = await extractSearchQuery(message, apiKey, request.signal); }
+ catch { return Response.json({ error: 'No se han podido extraer los temas de tu pregunta. Inténtalo de nuevo.' }, { status: 502 }); }
+ const { data: documents, error: searchError } = await db.rpc('search_chat_documents', { question: searchQuery });
  if (searchError) return Response.json({ error: 'No se ha podido buscar en tus documentos.' }, { status: 500 });
  const docs = boundedRetrieval(documents ?? []);
  const { count } = await db.from('messages').select('id', { count: 'exact', head: true }).eq('conversation_id', conversationId);
  const { error: userError } = await db.from('messages').insert({ id: messageId, conversation_id: conversationId, role: 'user', content: message, citations: [] });
  if (userError) return Response.json({ error: 'No se ha podido guardar tu pregunta.' }, { status: 500 });
  if (count === 0) await db.from('conversations').update({ title: message.slice(0,120) }).eq('id', conversationId);
- const apiKey = process.env['LOVABLE_API_KEY'];
- if (docs.length && !apiKey) return Response.json({ error: 'Lovable AI no está configurada.' }, { status: 401 });
  let upstreamError: { status: number; message: string; type?: string } | undefined;
  const run = createLovableAiGatewayRunIdFetch();
  const encoder = new TextEncoder();

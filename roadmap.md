@@ -24,7 +24,8 @@
 - [x] Verificar reglas y sincronización desde la cuenta con sesión.
 
 ## Chat con documentos reales
-- [x] Búsqueda española ponderada, seis resultados y fragmentos de 3000 caracteres.
+- [x] Búsqueda española ponderada y fragmentos de 3000 caracteres.
+- [x] Extraer 3–6 temas con sinónimos, buscar con OR y ts_rank_cd, hasta ocho resultados; pregunta sobre Second Brain recupera Product Builder y persiste tras recarga.
 - [x] Respuestas de Lovable AI, citas, contradicciones y guardado por usuario.
 - [x] Verificar preguntas reales, errores y documentos enviados al modelo.
 
