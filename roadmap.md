@@ -24,6 +24,7 @@
 - [x] Verificar reglas y sincronización desde la cuenta con sesión.
 
 ## Chat con documentos reales
+- [x] Documentos cortos completos y pasajes relevantes de documentos largos, límites de 6000/documento y 15000 totales; Product Builder envía sus 2460 caracteres con funcionalidades y roadmap, y el contexto persiste tras recargar.
 - [x] Consultas recientes por fecha, tema opcional y periodos de Madrid; fechas en cada cita, cinco preguntas verificadas con documentos reales y respuesta persistida en móvil/escritorio claro/oscuro.
 - [x] Búsqueda española ponderada y fragmentos de 3000 caracteres.
 - [x] Extraer 3–6 temas con sinónimos, buscar con OR y ts_rank_cd, hasta ocho resultados; pregunta sobre Second Brain recupera Product Builder y persiste tras recarga.

@@ -7,6 +7,7 @@ import { createLovableAiGatewayRunIdFetch } from './ai/run-id.ts';
 import { answerSchema, validateAnswer, boundedRetrieval } from './chat-answer';
 import { extractSearchQuery } from './chat-search.server';
 import { dateIntent, periodBounds } from './chat-date';
+import { buildDocumentContext } from './chat-passages';
 
 const inputSchema = z.object({ conversationId: z.string().uuid(), message: z.string().trim().min(1).max(20000), messageId: z.string().uuid() });
 export async function handleChatAnswer(request: Request) {
@@ -37,7 +38,13 @@ export async function handleChatAnswer(request: Request) {
   ? await db.rpc('search_chat_documents_by_date', { topic: searchQuery, ...periodBounds(temporal.period, now) })
   : await db.rpc('search_chat_documents', { question: searchQuery });
  if (searchError) return Response.json({ error: 'No se ha podido buscar en tus documentos.' }, { status: 500 });
- const docs = boundedRetrieval(documents ?? []);
+ const selected = boundedRetrieval(documents ?? []);
+ const { data: fullDocuments, error: contentError } = selected.length
+  ? await db.from('documents').select('id,content,summary').in('id', selected.map(d => d.document_id))
+  : { data: [], error: null };
+ if (contentError) return Response.json({ error: 'No se ha podido leer el contenido de tus documentos.' }, { status: 500 });
+ const contents = new Map((fullDocuments ?? []).map(d => [d.id, d.content || d.summary]));
+ const docs = buildDocumentContext(selected, contents, message, searchQuery);
  const { count } = await db.from('messages').select('id', { count: 'exact', head: true }).eq('conversation_id', conversationId);
  const { error: userError } = await db.from('messages').insert({ id: messageId, conversation_id: conversationId, role: 'user', content: message, citations: [] });
  if (userError) return Response.json({ error: 'No se ha podido guardar tu pregunta.' }, { status: 500 });
