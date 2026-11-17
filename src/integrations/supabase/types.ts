@@ -368,6 +368,17 @@ export type Database = {
           title: string
         }[]
       }
+      search_chat_documents_by_date: {
+        Args: { period_end?: string; period_start?: string; topic?: string }
+        Returns: {
+          document_id: string
+          excerpt: string
+          modified_at: string
+          rank: number
+          source: Database["public"]["Enums"]["document_source"]
+          title: string
+        }[]
+      }
     }
     Enums: {
       connection_status: "conectado" | "desconectado" | "proximamente"

@@ -38,6 +38,7 @@ use the editor.
 - Notion uses App User Connector OAuth through authenticated server functions, a one-time user-bound nonce, and encrypted server-only connection keys keyed by user/connector; never fall back to project provider credentials. Sync uses short persisted steps and per-user cursors to avoid long invocations.
 
 - Chat answers use the authenticated `/api/chat-answer` TanStack server route, model-extracted bilingual topic phrases joined with OR for Spanish invoker full-text retrieval (title-weighted ts_rank_cd, up to eight documents), and streamed structured Lovable AI Responses; preserve and persist retrieved excerpts so users can audit the exact context without exposing other users’ documents.
+- Temporal chat queries use a separate invoker RPC sorted by source_modified_at, optional topic OR filter and Europe/Madrid calendar periods (Monday weeks); leave ordinary relevance search and excerpts unchanged and include each cited document's source modification date.
 
 - Billing uses immutable per-user trials and server-owned Stripe subscription rows; restrictive RLS and server checks enforce access independently of the UI. Only live subscriptions grant paid access; test purchases never unlock production data.
 - Payments use the shared gateway Stripe client, signed public webhooks and authenticated embedded checkout; user identity and price are derived server-side to prevent tampering.
