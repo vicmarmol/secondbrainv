@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { notionConfigured, notionRequest, NotionError, NotionReconnectError } from './notion.server';
-import { blockText, contentHash, discoverySchema, documentChange, emptyDiscovery, MAX_NOTION_PAGES, pageTitle, progressSchema, SUMMARY_LENGTH } from './notion';
+import { blockText, contentHash, discoverySchema, discoveryExhausted, documentChange, emptyDiscovery, MAX_NOTION_PAGES, pageTitle, progressSchema, SUMMARY_LENGTH } from './notion';
 import type { Database, Json } from '@/integrations/supabase/types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -28,7 +28,8 @@ export const beginNotionSync = createServerFn({ method: 'POST' }).middleware([re
  if (connection.status !== 'conectado' || !await notionConfigured(userId)) throw new NotionError('Conecta tu propia cuenta de Notion antes de sincronizar.');
  const existing = checked(await db.from('sync_runs').select('*').eq('connection_id', connection.id).eq('user_id', userId).eq('status', 'en_curso').maybeSingle());
  if (existing) return existing.id;
- const discovery = connection.notion_cursor ? discoverySchema.parse(connection.notion_cursor) : emptyDiscovery();
+ const saved = connection.notion_cursor ? discoverySchema.parse(connection.notion_cursor) : null;
+ const discovery = saved && !discoveryExhausted(saved) ? saved : emptyDiscovery();
  const run = checked(await db.from('sync_runs').insert({ user_id: userId, connection_id: connection.id, status: 'en_curso', progress: { discovery, processed: 0, current: null } as unknown as Json }).select('id').single());
  if (!run) throw new Error('No se ha podido iniciar la sincronización.');
  return run.id;
@@ -38,7 +39,7 @@ export const stepNotionSync = createServerFn({ method: 'POST' }).middleware([req
  const { requireAppAccess } = await import('./billing.server'); await requireAppAccess(db);
  const run = checked(await db.from('sync_runs').select('*').eq('id', data.runId).eq('user_id', userId).single());
  if (!run) throw new Error('Sincronización no disponible.');
- if (run.status !== 'en_curso') return { done: true, processed: 0, newDocuments: run.new_documents, updatedDocuments: run.updated_documents, hasMore: false, error: run.error_message };
+ if (run.status !== 'en_curso') return { done: true, processed: 0, newDocuments: run.new_documents, updatedDocuments: run.updated_documents, inaccessibleDocuments: run.inaccessible_documents, hasMore: false, error: run.error_message };
  let newDocuments = run.new_documents, updatedDocuments = run.updated_documents;
  const progress = progressSchema.parse(run.progress);
  const d = progress.discovery;
@@ -105,17 +106,16 @@ export const stepNotionSync = createServerFn({ method: 'POST' }).middleware([req
   }
   const hasMore = !!progress.current || !!d.pages.length || !!d.sources.length || !d.done;
   const done = progress.processed >= MAX_NOTION_PAGES || !hasMore;
-  if (done) {
-   const count = await db.from('documents').select('id', { count: 'exact', head: true }).eq('user_id', userId).eq('source', 'notion').eq('excluded', false).not('content_hash', 'is', null);
-   checked(count);
-   checked(await db.from('connections').update({ status: 'conectado', last_synced_at: new Date().toISOString(), document_count: count.count ?? 0, notion_cursor: hasMore ? d as unknown as Json : null }).eq('id', run.connection_id).eq('user_id', userId));
-  }
-  checked(await db.from('sync_runs').update({ progress: progress as unknown as Json, new_documents: newDocuments, updated_documents: updatedDocuments, ...(done ? { status: 'completada' as const, finished_at: new Date().toISOString() } : {}) }).eq('id', run.id).eq('user_id', userId));
-  return { done, processed: progress.processed, newDocuments, updatedDocuments, hasMore: done && hasMore, error: null };
+  // Access reconciliation and successful completion commit together; errors cannot leave partial marks.
+  const inaccessibleDocuments = done
+   ? checked(await db.rpc('finish_notion_sync', { sync_id: run.id, sync_progress: progress as unknown as Json, new_count: newDocuments, updated_count: updatedDocuments }))
+   : run.inaccessible_documents;
+  if (!done) checked(await db.from('sync_runs').update({ progress: progress as unknown as Json, new_documents: newDocuments, updated_documents: updatedDocuments }).eq('id', run.id).eq('user_id', userId));
+  return { done, processed: progress.processed, newDocuments, updatedDocuments, inaccessibleDocuments, hasMore: done && hasMore, error: null };
  } catch (error) {
    if (error instanceof NotionReconnectError) checked(await db.from('connections').update({ status: 'desconectado' }).eq('id', run.connection_id).eq('user_id', userId));
   const message = error instanceof NotionError ? error.message : 'La sincronización no ha podido completarse. Vuelve a intentarlo; tus documentos se conservan.';
   checked(await db.from('sync_runs').update({ status: 'error', finished_at: new Date().toISOString(), error_message: message, new_documents: newDocuments, updated_documents: updatedDocuments }).eq('id', run.id).eq('user_id', userId));
-  return { done: true, processed: progress.processed, newDocuments, updatedDocuments, hasMore: false, error: message };
+  return { done: true, processed: progress.processed, newDocuments, updatedDocuments, inaccessibleDocuments: run.inaccessible_documents, hasMore: false, error: message };
  }
 });

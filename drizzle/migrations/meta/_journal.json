@@ -78,6 +78,13 @@
       "when": 1794942715852,
       "tag": "0010_chat_date_retrieval",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794943731757,
+      "tag": "0011_notion_document_access",
+      "breakpoints": true
     }
   ]
 }

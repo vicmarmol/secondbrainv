@@ -15,6 +15,7 @@
 - [x] Datos por usuario con seguridad por filas; datos de ejemplo bajo demanda en Ajustes.
 
 ## Notion
+- [x] Marcar documentos sin acceso solo al completar un recorrido sin errores; filtro en Biblioteca, exclusión del chat y resumen, sin borrar documentos. Verificado con 42 documentos conservados, 30 sin acceso, ambas búsquedas sin filtraciones y 40 pruebas.
 - [x] Sustituir acceso global por conexión Notion individual y credenciales cifradas.
 - [x] Limpiar importaciones y sincronizaciones de Notion de Laura.
 - [x] Verificar claves aisladas, permisos y apertura de autorización; explicar pruebas con dos usuarios.

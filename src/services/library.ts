@@ -9,19 +9,20 @@ const statusLabel: Record<Row['status'], Document['status']> = { indexado: 'Inde
 
 export function toDocument(row: Row): Document {
  const modified = row.source_modified_at ?? row.updated_at;
- return { id: row.id, title: row.title, source: sourceLabel[row.source], type: typeLabel[row.type], status: statusLabel[row.status], date: modified.slice(0, 10), summary: row.summary, tags: row.tags, content: row.content, externalUrl: row.external_url, excluded: row.excluded, createdAt: row.created_at, updatedAt: row.updated_at, chunks: [{ id: `chunk-${row.id}`, text: row.content }] };
+ return { id: row.id, title: row.title, source: sourceLabel[row.source], type: typeLabel[row.type], status: row.inaccessible ? 'Sin acceso' : statusLabel[row.status], inaccessible: row.inaccessible, date: modified.slice(0, 10), summary: row.summary, tags: row.tags, content: row.content, externalUrl: row.external_url, excluded: row.excluded, createdAt: row.created_at, updatedAt: row.updated_at, chunks: [{ id: `chunk-${row.id}`, text: row.content }] };
 }
 
 /** Index entries; excluded ones are left out unless requested. */
-export async function getDocuments(options: { includeExcluded?: boolean } = {}): Promise<Document[]> {
+export async function getDocuments(options: { includeExcluded?: boolean; includeInaccessible?: boolean } = {}): Promise<Document[]> {
  let query = supabase.from('documents').select('*').order('source_modified_at', { ascending: false });
  if (!options.includeExcluded) query = query.eq('excluded', false);
+ if (!options.includeInaccessible) query = query.eq('inaccessible', false);
  const { data, error } = await query;
  if (error) throw new Error('No se ha podido cargar la biblioteca.');
  return (data ?? []).map(toDocument);
 }
 
-export async function searchDocuments(text: string, options: { includeExcluded?: boolean } = {}) {
+export async function searchDocuments(text: string, options: { includeExcluded?: boolean; includeInaccessible?: boolean } = {}) {
  const q = text.toLocaleLowerCase('es');
  return (await getDocuments(options)).filter(d => `${d.title} ${d.summary} ${d.tags.join(' ')}`.toLocaleLowerCase('es').includes(q));
 }

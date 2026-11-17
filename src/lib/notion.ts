@@ -8,12 +8,16 @@ export const discoverySchema = z.object({
  cursor: z.string().nullable().default(null), done: z.boolean().default(false),
  sources: z.array(z.object({ id: z.string(), cursor: z.string().nullable() })).default([]),
  pages: z.array(pageSchema).default([]), seen: z.array(z.string()).default([]),
+ trackingComplete: z.boolean().default(false),
 });
 export const progressSchema = z.object({
  discovery: discoverySchema, processed: z.number().default(0),
  current: z.object({ page: pageSchema, queue: z.array(z.object({ id: z.string(), cursor: z.string().nullable() })), text: z.array(z.string()) }).nullable().default(null),
 });
-export const emptyDiscovery = () => discoverySchema.parse({});
+export const emptyDiscovery = () => discoverySchema.parse({ trackingComplete: true });
+export function discoveryExhausted(d: z.infer<typeof discoverySchema>) {
+ return d.done && d.pages.length === 0 && d.sources.length === 0;
+}
 export function pageTitle(page: NotionPage) {
  const title = Object.values(page.properties).find((p): p is { type: string; title: { plain_text: string }[] } => !!p && typeof p === 'object' && 'type' in p && p.type === 'title');
  return title?.title?.map(t => t.plain_text).join('') || 'Sin título';

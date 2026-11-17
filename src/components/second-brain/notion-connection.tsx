@@ -55,7 +55,7 @@ export function NotionConnection({ connection, onRefresh }: { connection: Connec
   setBusy(true); setError(null); setProgress(null);
   try {
    const result = await syncNotion(begin, step, setProgress);
-   toast.success(`Notion: ${result.newDocuments} nuevos · ${result.updatedDocuments} actualizados`);
+   toast.success(`Notion: ${result.newDocuments} nuevos · ${result.updatedDocuments} actualizados · ${result.inaccessibleDocuments} sin acceso`);
   } catch (e) { setError(e instanceof Error ? e.message : 'No se ha podido sincronizar Notion.'); }
   finally {
    await Promise.all([fetchState().then(setState).catch(() => undefined), onRefresh().catch(() => undefined)]);
@@ -77,9 +77,9 @@ export function NotionConnection({ connection, onRefresh }: { connection: Connec
     </div>
   </div>
    {busy && progress && <div role="status" className="mt-4 space-y-2"><div className="flex items-center gap-2 text-sm"><Loader2 className="size-4 animate-spin"/>{`${progress.processed} de un máximo de 50 páginas · ${progress.newDocuments} nuevos · ${progress.updatedDocuments} actualizados`}</div><progress className="h-1.5 w-full accent-primary" max={50} value={progress.processed}/></div>}
-  {progress?.done && !progress.error && <p role="status" className="mt-3 flex items-center gap-2 text-sm text-primary"><CheckCircle2 className="size-4 shrink-0"/>{progress.newDocuments} documentos nuevos · {progress.updatedDocuments} actualizados</p>}
+  {progress?.done && !progress.error && <p role="status" className="mt-3 flex items-center gap-2 text-sm text-primary"><CheckCircle2 className="size-4 shrink-0"/>{progress.newDocuments} documentos nuevos · {progress.updatedDocuments} actualizados · {progress.inaccessibleDocuments} sin acceso</p>}
   {(state?.hasMore || progress?.hasMore) && <p className="mt-3 text-sm text-muted-foreground">Quedan páginas por revisar. Continúa en la siguiente sincronización.</p>}
   {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
-  {!!state?.runs.length && <div className="mt-4 border-t border-border pt-3"><h2 className="text-xs font-medium text-muted-foreground">Últimas sincronizaciones</h2><ul className="mt-2 space-y-2">{state.runs.map(r => <li key={r.id} className="flex flex-wrap justify-between gap-2 text-xs"><span>{fmt(r.started_at)}</span><span className={r.status === 'error' ? 'text-destructive' : 'text-muted-foreground'}>{r.status === 'completada' ? `${r.new_documents} nuevos · ${r.updated_documents} actualizados` : r.status === 'error' ? r.error_message ?? 'Error' : 'En curso'}</span></li>)}</ul></div>}
+  {!!state?.runs.length && <div className="mt-4 border-t border-border pt-3"><h2 className="text-xs font-medium text-muted-foreground">Últimas sincronizaciones</h2><ul className="mt-2 space-y-2">{state.runs.map(r => <li key={r.id} className="flex flex-wrap justify-between gap-2 text-xs"><span>{fmt(r.started_at)}</span><span className={r.status === 'error' ? 'text-destructive' : 'text-muted-foreground'}>{r.status === 'completada' ? `${r.new_documents} nuevos · ${r.updated_documents} actualizados · ${r.inaccessible_documents} sin acceso` : r.status === 'error' ? r.error_message ?? 'Error' : 'En curso'}</span></li>)}</ul></div>}
  </li>;
 }

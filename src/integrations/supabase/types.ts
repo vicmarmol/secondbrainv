@@ -149,6 +149,7 @@ export type Database = {
           external_id: string
           external_url: string
           id: string
+          inaccessible: boolean
           search_vector: unknown
           source: Database["public"]["Enums"]["document_source"]
           source_modified_at: string | null
@@ -168,6 +169,7 @@ export type Database = {
           external_id: string
           external_url: string
           id?: string
+          inaccessible?: boolean
           search_vector?: unknown
           source: Database["public"]["Enums"]["document_source"]
           source_modified_at?: string | null
@@ -187,6 +189,7 @@ export type Database = {
           external_id?: string
           external_url?: string
           id?: string
+          inaccessible?: boolean
           search_vector?: unknown
           source?: Database["public"]["Enums"]["document_source"]
           source_modified_at?: string | null
@@ -295,6 +298,7 @@ export type Database = {
           error_message: string | null
           finished_at: string | null
           id: string
+          inaccessible_documents: number
           new_documents: number
           progress: Json
           started_at: string
@@ -307,6 +311,7 @@ export type Database = {
           error_message?: string | null
           finished_at?: string | null
           id?: string
+          inaccessible_documents?: number
           new_documents?: number
           progress?: Json
           started_at?: string
@@ -319,6 +324,7 @@ export type Database = {
           error_message?: string | null
           finished_at?: string | null
           id?: string
+          inaccessible_documents?: number
           new_documents?: number
           progress?: Json
           started_at?: string
@@ -354,6 +360,15 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      finish_notion_sync: {
+        Args: {
+          new_count: number
+          sync_id: string
+          sync_progress: Json
+          updated_count: number
+        }
+        Returns: number
       }
       has_app_access: { Args: never; Returns: boolean }
       load_sample_data: { Args: never; Returns: undefined }
