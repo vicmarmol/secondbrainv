@@ -47,3 +47,4 @@ use the editor.
 - Billing uses registration-anchored per-user trials and server-owned Stripe subscription rows; restrictive RLS and server checks enforce access independently of the UI. Only live subscriptions grant paid access; test purchases never unlock production data.
 - Keep roles in protected user_roles with own-row SELECT only and no app writes; resolve has_role only server-side and return a free-access entitlement, never role rows, to presentation code. Signup triggers create the default role and trial, and has_app_access enforces both role and billing rules without widening data ownership.
 - Payments use the shared gateway Stripe client, signed public webhooks and authenticated embedded checkout; user identity and price are derived server-side to prevent tampering.
+- "Ver como" (admin preview) is in-memory UI state in src/lib/view-as.ts, applied only when server billing reports freeAccess; it never changes queries, roles or RLS.
