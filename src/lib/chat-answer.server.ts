@@ -8,6 +8,7 @@ import { answerSchema, validateAnswer, boundedRetrieval } from './chat-answer';
 import { extractSearchQuery, rewriteFollowUpQuestion } from './chat-search.server';
 import { dateIntent, periodBounds } from './chat-date';
 import { buildDocumentContext } from './chat-passages';
+import { retrieveWithFallback } from './chat-retrieval';
 
 const inputSchema = z.object({ conversationId: z.string().uuid(), message: z.string().trim().min(1).max(20000), messageId: z.string().uuid() });
 export async function handleChatAnswer(request: Request) {
@@ -40,9 +41,11 @@ export async function handleChatAnswer(request: Request) {
  const now = new Date();
  try { searchQuery = await extractSearchQuery(question, apiKey, request.signal, temporal !== null); }
  catch { return Response.json({ error: 'No se han podido extraer los temas de tu pregunta. Inténtalo de nuevo.' }, { status: 502 }); }
- const { data: documents, error: searchError } = temporal
-  ? await db.rpc('search_chat_documents_by_date', { topic: searchQuery, ...periodBounds(temporal.period, now) })
-  : await db.rpc('search_chat_documents', { question: searchQuery });
+  const retrieval = await retrieveWithFallback(question, searchQuery, async query => temporal
+   ? await db.rpc('search_chat_documents_by_date', { topic: query, ...periodBounds(temporal.period, now) })
+   : await db.rpc('search_chat_documents', { question: query }), !temporal || searchQuery !== '');
+  const { data: documents, error: searchError } = retrieval;
+  searchQuery = retrieval.query;
  if (searchError) return Response.json({ error: 'No se ha podido buscar en tus documentos.' }, { status: 500 });
  const selected = boundedRetrieval(documents ?? []);
  const { data: fullDocuments, error: contentError } = selected.length
@@ -77,7 +80,7 @@ export async function handleChatAnswer(request: Request) {
     for await (const partial of result.partialOutputStream) if (partial.text) emit({ type: 'text', text: partial.text });
     answer = validateAnswer(await result.output, docs.map(d => d.document_id));
    }
-    const metadata = { retrieved: docs, conflicts: answer.conflicts, difference: answer.difference, standalone_question: question, run_id: run.getRunId() ?? null };
+     const metadata = { retrieved: docs, conflicts: answer.conflicts, difference: answer.difference, standalone_question: question, search_attempts: retrieval.attempts, run_id: run.getRunId() ?? null };
    const { data: saved, error } = await db.from('messages').insert({ conversation_id: conversationId, role: 'assistant', content: answer.text, citations: answer.document_ids.map(document_id => ({ document_id })), answer_metadata: metadata as unknown as Json }).select('id').single();
    if (error || !saved) throw new Error('La respuesta no se ha podido guardar.');
    const { error: updateError } = await db.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', conversationId);

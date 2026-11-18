@@ -3,14 +3,21 @@ export const answerSchema = z.object({ text: z.string(), document_ids: z.array(z
 export type Answer = z.infer<typeof answerSchema>;
 export const MAX_RESULTS = 8;
 export const MAX_EXCERPT = 3000;
-export const searchTermsSchema = z.object({ terms: z.array(z.string().trim().min(1).max(120)).min(3).max(6) });
+export const searchTermsSchema = z.object({ terms: z.array(z.string().trim().min(1).max(120)).min(1).max(24), phrases: z.array(z.string().trim().min(1).max(120)).max(4) });
 
-/** Quote each topic as a phrase; model output cannot inject search operators. */
-export function keywordQuery(terms: string[]) {
- const validated = searchTermsSchema.parse({ terms });
- const clean = [...new Set(validated.terms.map(term => term.replace(/[\p{P}\p{S}]/gu, ' ').replace(/\s+/g, ' ').trim().toLowerCase()).filter(Boolean))];
- if (!clean.length) throw new Error('No se han podido extraer temas de la pregunta.');
- return clean.map(term => `"${term}"`).join(' OR ');
+const normalize = (text: string) => text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+const stopwords = new Set('a al algo algun alguna algunos algunas ante bajo como con contra cual cuales cuando cuanto cuanta cuantos cuantas de del desde donde durante e el ella ellos en entre era es esa ese eso esta estas este estos hay he la las le les lo los mas me mi mis no nos o para pero por que quien se si sin sobre su sus tengo tiene tienen tu tus un una unos unas y ya or'.split(' '));
+export function questionWords(question: string) {
+ return [...new Set(normalize(question).match(/[\p{L}\p{N}]+/gu) ?? [])].filter(word => !stopwords.has(word) && (word.length > 1 || /^\d+$/.test(word)));
+}
+/** Only explicitly identified names may be phrases; all other terms are independent OR words. */
+export function keywordQuery(terms: string[], phrases: string[] = []) {
+ const validated = searchTermsSchema.parse({ terms, phrases });
+ const clean = [...new Set(validated.terms.flatMap(questionWords))];
+ const names = [...new Set((validated.phrases ?? []).map(name => normalize(name).replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim()).filter(name => name && !name.split(' ').some(word => word === 'or')))];
+ const parts = [...clean, ...names.map(name => `"${name}"`)];
+ if (!parts.length) throw new Error('No se han podido extraer temas de la pregunta.');
+ return parts.join(' OR ');
 }
 export function validateAnswer(answer: Answer, ids: string[]) {
  const allowed = new Set(ids);
