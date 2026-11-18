@@ -49,3 +49,4 @@ use the editor.
 - Payments use the shared gateway Stripe client, signed public webhooks and authenticated embedded checkout; user identity and price are derived server-side to prevent tampering.
 - "Ver como" (admin preview) is in-memory UI state in src/lib/view-as.ts, applied only when server billing reports freeAccess; it never changes queries, roles or RLS.
 - Source sync goes through one connector interface (src/lib/sync): each source registers a resumable `step`; the shared engine (leases, errors, attention flag) serves both manual sync and the hourly managed job, so new sources only add and register a connector.
+- Connectors declare capabilities (read, optional create); chat saving goes through the generic src/lib/source-write layer, which stores created documents with the same external_id/hash as sync and rolls back the source write if the local insert fails, so chat holds no source-specific logic.

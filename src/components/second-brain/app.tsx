@@ -13,6 +13,9 @@ import { AssistantMarkdown } from './assistant-markdown';
 import { LibraryView } from './library';
 import { BillingView } from './billing';
 import { SyncIndicator } from './sync-indicator';
+import { SaveDraftCard } from './save-draft';
+import { interpretSaveRequest, SAVE_PATTERN, type SaveIntent } from '@/services/source-write';
+import { useServerFn } from '@tanstack/react-start';
 import { getBilling } from '@/services/billing';
 import { useQuery } from '@tanstack/react-query';
 import { useViewAs, setViewAs, viewAsLabel, type ViewAs } from '@/lib/view-as';
@@ -36,6 +39,8 @@ export function SecondBrainApp({ view = 'chat' }: { view?: 'chat' | 'library' | 
  const [editing, setEditing] = useState<{ id: string; title: string } | null>(null);
  const [email, setEmail] = useState<string | null>(null);
  const navigate = useNavigate();
+ const interpret = useServerFn(interpretSaveRequest);
+ const [draft, setDraft] = useState<Extract<SaveIntent, { kind: 'draft' }> | null>(null);
  const queryClient = useQueryClient();
  const billingQuery = useQuery({ queryKey: ['billing'], queryFn: getBilling, refetchInterval: 10000 });
  const isAdmin = billingQuery.data?.freeAccess === true;
@@ -55,6 +60,15 @@ export function SecondBrainApp({ view = 'chat' }: { view?: 'chat' | 'library' | 
  const touch = (id: string, extra: Message) => setConversations(prev => { const c = prev.find(x => x.id === id); return c ? [{ ...c, updatedAt: new Date().toISOString(), messages: [...c.messages, extra] }, ...prev.filter(x => x.id !== id)] : prev; });
  async function send(text: string) {
   if (!text.trim() || pending) return;
+  if (SAVE_PATTERN.test(text)) {
+   setPending('save');
+   try {
+    const intent = await interpret({ data: { message: text.trim() } });
+    if (intent.kind === 'unsupported') { toast.error(intent.message); return; }
+    if (intent.kind === 'draft') { setDraft(intent); setInput(''); return; }
+   } catch (e) { toast.error((e as Error).message); return; }
+   finally { setPending(null); }
+  }
   const isNew = !active;
   const id = active ?? crypto.randomUUID();
   const user: Message = { id: crypto.randomUUID(), role: 'user', content: text.trim(), citations: [] };
@@ -94,7 +108,7 @@ export function SecondBrainApp({ view = 'chat' }: { view?: 'chat' | 'library' | 
  <div className="chat-body" ref={bodyRef}>
  {!messages.length ? <section className="empty-chat"><div className="empty-symbol"><Brain size={30} strokeWidth={1.5}/></div><h1>¿Qué necesitas recordar?</h1><p className="intro">Tus ideas, reuniones y conocimientos. Todo conectado.<br/>Pregunta algo y encuentra la respuesta en tus fuentes.</p><div className="suggestions">{suggestions.map(s => <Button key={s.label} variant="ghost" className="suggestion" disabled={!!pending} onClick={() => send(s.label)}><span className="suggestion-top"><s.icon size={15}/>{s.category}<ArrowUpRight/></span><span>{s.label}</span></Button>)}</div><div className="source-row"><span>Tu conocimiento, conectado con</span><div className="source-logos" aria-label="Notion, Drive, Dropbox, Granola y Garmin"><span className="source-logo notion" title="Notion">N</span><span className="source-logo" title="Google Drive"><Triangle size={20}/></span><span className="source-logo" title="Dropbox"><HardDrive size={19}/></span><span className="source-logo" title="Granola"><Leaf size={20}/></span><span className="source-logo" title="Garmin"><Bike size={20}/></span></div></div></section> : <div className="messages">{messages.map(m => m.role === 'user' ? <div key={m.id} className="user-message">{m.content}</div> : <AssistantMessage key={m.id} message={m} animate={animatedIds.includes(m.id)} onCitation={setCitation} onFeedback={value => setConversations(prev => prev.map(c => c.id === active ? { ...c, messages: c.messages.map(item => item.id === m.id ? { ...item, feedback: item.feedback === value ? undefined : value } : item) } : c))}/>)}{pending === active && <div className="assistant-message" role="status"><div className="assistant-heading"><Brain size={19} className="text-primary"/>Buscando en tus fuentes…</div><AssistantMarkdown content={partial}/><div className="loading-dots"><span/><span/><span/></div></div>}</div>}
  </div>
- <div className="composer-wrap"><form className="composer" onSubmit={event => { event.preventDefault(); send(input); }}><textarea ref={textareaRef} aria-label="Pregunta a Second Brain" placeholder="Pregunta a tu Second Brain…" value={input} rows={2} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(input); } }}/><div className="composer-tools"><div className="composer-sources"><Settings2/><span>Todas las fuentes</span><ChevronDown size={12}/></div><Button size="icon" type="submit" disabled={!input.trim() || !!pending} aria-label="Enviar mensaje" title="Enviar mensaje"><ArrowUp/></Button></div></form><p className="composer-note">Las respuestas se basan en tus fuentes. Revisa las citas para comprobar la información.</p></div>
+ <div className="composer-wrap">{draft && <SaveDraftCard key={draft.content} draft={draft} onClose={() => setDraft(null)}/>}<form className="composer" onSubmit={event => { event.preventDefault(); send(input); }}><textarea ref={textareaRef} aria-label="Pregunta a Second Brain" placeholder="Pregunta a tu Second Brain…" value={input} rows={2} onChange={e => setInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(input); } }}/><div className="composer-tools"><div className="composer-sources"><Settings2/><span>Todas las fuentes</span><ChevronDown size={12}/></div><Button size="icon" type="submit" disabled={!input.trim() || !!pending} aria-label="Enviar mensaje" title="Enviar mensaje"><ArrowUp/></Button></div></form><p className="composer-note">Las respuestas se basan en tus fuentes. Revisa las citas para comprobar la información.</p></div>
  </>}
  {citation && <aside className="preview-panel" aria-label="Vista previa del documento"><div className="preview-header"><span className="flex items-center gap-2"><FileText size={15}/>Fuente original</span><Button variant="ghost" size="icon" aria-label="Cerrar vista previa" onClick={() => setCitation(null)}><X/></Button></div><div className="preview-content"><TypeIcon type={citation.document.type} className="text-primary"/><h2>{citation.document.title}</h2><div className="preview-metadata"><div><span>Fuente</span>{citation.document.source}</div><div><span>Modificado</span>{formatDate(citation.document.date)}</div><div><span>Tipo</span>{citation.document.type}</div><div><span>Estado</span>{citation.document.status}</div></div><h3>Fragmento relevante</h3><p>{citation.document.chunks.map(chunk => <span key={chunk.id}>{chunk.id === citation.chunkId ? <mark>{chunk.text}</mark> : chunk.text}</span>)}</p><h3>Resumen</h3><p className="text-muted-foreground">{citation.document.summary}</p><div className="flex flex-wrap gap-2 mt-5">{citation.document.tags.map(tag => <span key={tag} className="bg-muted text-muted-foreground text-[10px] px-2 py-1 rounded">{tag}</span>)}</div><Button variant="outline" className="w-full mt-8" disabled={!citation.document.externalUrl} asChild={!!citation.document.externalUrl}>{citation.document.externalUrl ? <a href={citation.document.externalUrl} target="_blank" rel="noopener noreferrer"><ExternalLink/>Abrir original</a> : <><ExternalLink/>Abrir original</>}</Button></div></aside>}
  </main></div>;

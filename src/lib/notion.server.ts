@@ -5,13 +5,13 @@ export class NotionError extends Error {}
 export class NotionReconnectError extends NotionError {}
 export async function notionConfigured(userId: string) { return !!await getConnectionKeyForUser(userId, 'notion'); }
 type NotionResponse = { results: any[]; has_more: boolean; next_cursor: string | null };
-export async function notionRequest(userId: string, path: string, body?: object): Promise<NotionResponse> {
+export async function notionRequest(userId: string, path: string, body?: object, method?: 'POST' | 'PATCH'): Promise<NotionResponse> {
  const key = await getConnectionKeyForUser(userId, 'notion');
  if (!key) throw new NotionError('Conecta tu cuenta de Notion antes de sincronizar.');
  for (let attempt = 0; attempt < 5; attempt++) {
   await wait(350);
    const response = await callAsAppUser({ gatewayBaseUrl: 'https://connector-gateway.lovable.dev', connectorId: 'notion', connectionAPIKey: key, path: `/v1${path}`, init: {
-    method: body ? 'POST' : 'GET', headers: { 'Notion-Version': '2025-09-03', 'Content-Type': 'application/json' },
+    method: method ?? (body ? 'POST' : 'GET'), headers: { 'Notion-Version': '2025-09-03', 'Content-Type': 'application/json' },
    ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(20000),
    } });
    if (await appUserReconnectRequired(response)) throw new NotionReconnectError('Tu acceso a Notion necesita renovarse. Vuelve a conectar.');

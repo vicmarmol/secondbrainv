@@ -188,3 +188,9 @@
 .sync-detail-row span { color: var(--muted-foreground); }
 .sync-detail-link { justify-self: start; font-size: 11px; color: var(--primary); background: none; border: 0; padding: 0; cursor: pointer; }
 @keyframes pulse { 50% { opacity: .35; } }
+
+.save-draft { display: grid; gap: .75rem; margin: 0 auto .75rem; max-width: 46rem; width: 100%; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); color: var(--card-foreground); }
+.save-draft-head { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; justify-content: space-between; }
+.save-field { display: grid; gap: .25rem; font-size: .75rem; color: var(--muted-foreground); }
+.save-field select, .save-field input, .save-field textarea { font-size: .875rem; color: var(--foreground); background: var(--background); border: 1px solid var(--input); border-radius: calc(var(--radius) - 2px); padding: .45rem .6rem; }
+.save-preview { display: grid; gap: .35rem; padding: .75rem; border-radius: calc(var(--radius) - 2px); background: var(--muted); }

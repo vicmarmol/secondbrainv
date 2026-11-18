@@ -1,5 +1,5 @@
 import { notionConfigured, notionRequest, NotionError, NotionReconnectError } from './notion.server';
-import { blockText, contentHash, discoverySchema, discoveryExhausted, documentChange, emptyDiscovery, MAX_NOTION_PAGES, pageTitle, progressSchema, SUMMARY_LENGTH } from './notion';
+import { notionContent, notionParagraphs, blockText, contentHash, discoverySchema, discoveryExhausted, documentChange, emptyDiscovery, MAX_NOTION_PAGES, pageTitle, progressSchema, SUMMARY_LENGTH } from './notion';
 import type { Json } from '@/integrations/supabase/types';
 import type { SourceConnector } from './sync/types';
 
@@ -10,7 +10,19 @@ function checked<T>(result: { data: T; error: unknown }): T {
 
 export const notionConnector: SourceConnector = {
  source: 'notion',
+ capabilities: { read: true, create: true },
  isReady: notionConfigured,
+ async listDestinations({ db, userId }) {
+  // Pages already shared with the integration (seen by sync) are valid parents.
+  const rows = checked(await db.from('documents').select('external_id,title').eq('user_id', userId).eq('source', 'notion').eq('inaccessible', false).eq('excluded', false).eq('is_sample', false).order('source_modified_at', { ascending: false }).limit(50));
+  return (rows ?? []).filter(r => /^[0-9a-f-]{32,36}$/i.test(r.external_id)).map(r => ({ id: r.external_id, label: r.title }));
+ },
+ async createDocument({ userId, destinationId, title, content }) {
+  const children = notionParagraphs(content);
+  const page: any = await notionRequest(userId, '/pages', { parent: { type: 'page_id', page_id: destinationId }, properties: { title: { title: [{ type: 'text', text: { content: title.slice(0, 2000) } }] } }, children });
+  return { externalId: page.id, url: page.url, title, content: notionContent(content), modifiedAt: page.last_edited_time };
+ },
+ async removeDocument({ userId, externalId }) { await notionRequest(userId, `/pages/${externalId}`, { in_trash: true }, 'PATCH'); },
  initialProgress(connection) {
   const saved = connection.notion_cursor ? discoverySchema.parse(connection.notion_cursor) : null;
   const discovery = saved && !discoveryExhausted(saved) ? saved : emptyDiscovery();

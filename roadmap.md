@@ -45,3 +45,7 @@
 
 ## Sincronización automática
 - [x] Interfaz común de conector, Notion adaptado, tarea horaria genérica, sin solapes, errores con "Requiere atención" y "hace X (automática/manual)"; ejecución real verificada.
+
+## Crear notas desde el chat
+- [x] Capacidad opcional «crear» en conectores (solo Notion), borrador Guardar/Editar/Descartar, guardado en Biblioteca con mismo id y huella, y deshacer si falla.
+- [ ] Probar un guardado real en Notion: requiere activar «Insertar contenido» en la integración.

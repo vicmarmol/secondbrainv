@@ -35,3 +35,10 @@ export async function contentHash(content: string) {
 export function documentChange(existing: { content_hash: string | null; excluded: boolean } | null, hash: string) {
  return existing?.excluded || existing?.content_hash === hash ? 'skip' : existing ? 'update' : 'insert';
 }
+/** One paragraph per non-empty line; joined like sync joins block text, so hashes match. */
+export const MAX_NOTE_LINES = 100;
+const noteLines = (text: string) => text.split(/\r?\n/).map(l => l.trimEnd()).filter(l => l.trim());
+export function notionContent(text: string) { return noteLines(text).join('\n\n'); }
+export function notionParagraphs(text: string) {
+ return noteLines(text).map(line => ({ object: 'block', type: 'paragraph', paragraph: { rich_text: (line.match(/[\s\S]{1,2000}/g) ?? []).map(content => ({ type: 'text', text: { content } })) } }));
+}
