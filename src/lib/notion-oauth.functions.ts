@@ -18,7 +18,7 @@ export const startNotionConnect = createServerFn({ method: 'POST' }).middleware(
  const { authorizeAppUserOAuth } = await import('@/integrations/lovable/appUserConnector');
  return authorizeAppUserOAuth({ gatewayBaseUrl, connectorId: 'notion', appUserId: context.userId, clientAPIKey, returnUrl: returnUrl.toString() });
 });
-export const completeNotionConnect = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(z.object({ code: z.string().min(1).max(4096), nonce: z.string().uuid() })).handler(async ({ context, data }) => {
+export const completeNotionConnect = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(z.object({ code: z.string().min(1).max(4096), nonce: z.string().uuid(), mode: z.enum(['connect', 'reauthorize']).default('connect') })).handler(async ({ context, data }) => {
  const { requireAppAccess } = await import('./billing.server'); await requireAppAccess(context.supabase);
  // Claim a one-time nonce belonging to this authenticated user before redeeming the code.
  const claimed = await context.supabase.from('connections').update({ notion_oauth_nonce: null }).eq('user_id', context.userId).eq('source', 'notion').eq('notion_oauth_nonce', data.nonce).select('id').maybeSingle();

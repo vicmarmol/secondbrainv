@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useServerFn } from '@tanstack/react-start';
-import { CheckCircle2, Loader2, RefreshCw, Plug, Unplug } from 'lucide-react';
+import { CheckCircle2, Loader2, RefreshCw, Plug, Unplug, KeyRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { beginNotionSync, getNotionState, stepNotionSync, syncNotion, startNotionConnect, completeNotionConnect, disconnectNotion, type NotionState, type NotionProgress } from '@/services/notion';
@@ -21,7 +21,7 @@ export function NotionConnection({ connection, onRefresh }: { connection: Connec
  const [progress, setProgress] = useState<NotionProgress | null>(null);
  useEffect(() => { fetchState().then(setState).catch(() => setError('No se ha podido comprobar la conexión de Notion.')); }, [fetchState]);
  async function refresh() { await Promise.all([fetchState().then(setState), onRefresh()]); }
- async function connect() {
+ async function connect(mode: 'connect' | 'reauthorize' = 'connect') {
   const popup = window.open('', 'notion-oauth', 'width=600,height=720');
   if (!popup) { setError('Permite las ventanas emergentes para conectar Notion.'); return; }
   setBusy(true); setError(null);
@@ -41,9 +41,9 @@ export function NotionConnection({ connection, onRefresh }: { connection: Connec
     window.addEventListener('message', listener);
    });
    popup.location.href = authorizationUrl;
-   await completeConnect({ data: await completion });
-   await refresh(); toast.success('Conectado a tu cuenta de Notion');
-  } catch (e) { setError(e instanceof Error ? e.message : 'No se ha podido conectar Notion.'); }
+   await completeConnect({ data: { ...(await completion), mode } });
+   await refresh(); toast.success(mode === 'reauthorize' ? 'Permisos de Notion actualizados' : 'Conectado a tu cuenta de Notion');
+  } catch (e) { setError(mode === 'reauthorize' ? `${e instanceof Error ? e.message : 'No se ha podido reautorizar Notion.'} Se mantiene el permiso actual.` : e instanceof Error ? e.message : 'No se ha podido conectar Notion.'); }
   finally { popup.close(); setBusy(false); }
  }
  async function unlink() {
@@ -74,8 +74,9 @@ export function NotionConnection({ connection, onRefresh }: { connection: Connec
    </div>
     <div className="flex flex-wrap gap-2">
      {connected && <Button variant="outline" size="sm" disabled={busy} onClick={run}>{busy ? <Loader2 className="animate-spin"/> : <RefreshCw/>}{active ? 'Reanudar sincronización' : state?.hasMore ? 'Continuar sincronización' : 'Sincronizar ahora'}</Button>}
-     {!connected && <Button size="sm" disabled={busy || !state} onClick={connect}>{busy ? <Loader2 className="animate-spin"/> : <Plug/>}Conectar</Button>}
-     {(connected || connection.status === 'Conectado') && <Button variant="ghost" size="sm" disabled={busy} onClick={unlink}><Unplug/>Desconectar</Button>}
+     {!connected && <Button size="sm" disabled={busy || !state} onClick={() => connect()}>{busy ? <Loader2 className="animate-spin"/> : <Plug/>}Conectar</Button>}
+     {connected && <Button variant="outline" size="sm" disabled={busy || active} onClick={() => connect('reauthorize')}><KeyRound/>Reautorizar</Button>}
+      {(connected || connection.status === 'Conectado') && <Button variant="ghost" size="sm" disabled={busy} onClick={unlink}><Unplug/>Desconectar</Button>}
     </div>
   </div>
    {busy && progress && <div role="status" className="mt-4 space-y-2"><div className="flex items-center gap-2 text-sm"><Loader2 className="size-4 animate-spin"/>{`${progress.processed} de un máximo de 50 páginas · ${progress.newDocuments} nuevos · ${progress.updatedDocuments} actualizados`}</div><progress className="h-1.5 w-full accent-primary" max={50} value={progress.processed}/></div>}
