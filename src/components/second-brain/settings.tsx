@@ -25,8 +25,8 @@ export function SettingsView() {
   <section className="mt-6 rounded-lg border border-border bg-card p-4">
    <h2 className="font-medium">Datos de ejemplo</h2>
    <p className="mt-1 text-sm text-muted-foreground">Añade 20 documentos y 5 conversaciones de ejemplo para explorar la aplicación. No cambia tus conexiones y puedes eliminarlos cuando quieras. Solo tú podrás verlos.</p>
-   <Button className="mt-4" onClick={load} disabled={busy}><Database/>{busy ? 'Cargando…' : 'Cargar datos de ejemplo'}</Button>
-   <Button className="ml-2 mt-4" variant="outline" onClick={remove} disabled={busy}><Trash2/>Eliminar datos de ejemplo</Button>
+   <div className="mt-4 flex flex-wrap gap-2"><Button onClick={load} disabled={busy}><Database/>{busy ? 'Cargando…' : 'Cargar datos de ejemplo'}</Button>
+   <Button variant="outline" onClick={remove} disabled={busy}><Trash2/>Eliminar datos de ejemplo</Button></div>
   </section>
  </div>;
 }
