@@ -342,6 +342,21 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -371,6 +386,13 @@ export type Database = {
         Returns: number
       }
       has_app_access: { Args: never; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       load_sample_data: { Args: never; Returns: undefined }
       search_chat_documents: {
         Args: { question: string }
@@ -396,6 +418,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "user"
       connection_status: "conectado" | "desconectado" | "proximamente"
       document_source:
         | "notion"
@@ -535,6 +558,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "user"],
       connection_status: ["conectado", "desconectado", "proximamente"],
       document_source: [
         "notion",

@@ -8,8 +8,9 @@ export const getBillingState = createServerFn({ method: 'POST' }).middleware([re
  if (trial.error) throw new Error('No se ha podido comprobar tu prueba gratuita.');
  const subscriptions = await context.supabase.from('subscriptions').select('*').eq('user_id', context.userId).eq('environment', data.environment).order('created_at', { ascending: false });
  const access = await context.supabase.rpc('has_app_access');
- if (subscriptions.error || access.error) throw new Error('No se ha podido comprobar tu suscripción.');
- return { trial: trial.data, subscriptions: subscriptions.data, hasAccess: access.data, serverNow: new Date().toISOString() };
+ const freeAccess = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
+ if (subscriptions.error || access.error || freeAccess.error) throw new Error('No se ha podido comprobar tu suscripción.');
+ return { trial: trial.data, subscriptions: subscriptions.data, hasAccess: access.data, freeAccess: freeAccess.data, serverNow: new Date().toISOString() };
 });
 async function resolveOrCreateCustomer(
  stripe: ReturnType<(typeof import('./stripe.server'))['createStripeClient']>,
@@ -34,6 +35,9 @@ async function resolveOrCreateCustomer(
 export const startSubscriptionCheckout = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(envSchema).handler(async ({ context, data }) => {
  const { createStripeClient, getStripeErrorMessage } = await import('./stripe.server');
  try {
+  const freeAccess = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
+  if (freeAccess.error) throw new Error('No se ha podido comprobar tu acceso.');
+  if (freeAccess.data) return { error: 'Tu cuenta tiene acceso gratuito y no necesita suscripción.' };
   const stripe = createStripeClient(data.environment);
   const { data: auth, error } = await context.supabase.auth.getUser();
   if (error || !auth.user) throw new Error('Inicia sesión de nuevo.');

@@ -45,6 +45,7 @@ export function BillingView() {
    <div className="mb-8 flex items-center gap-3 text-primary"><Brain size={24}/><span className="text-xl font-semibold">Second Brain</span></div>
    <h1 className="text-2xl font-semibold">Tu suscripción</h1>
    {query.isPending ? <p className="mt-4 text-muted-foreground">Comprobando tu acceso…</p> : query.error ? <div className="mt-4"><p role="alert">{query.error.message}</p><Button className="mt-4" onClick={() => query.refetch()}>Reintentar</Button></div> : <>
+    {query.data?.freeAccess ? <div className="mt-8 border-y border-border py-7"><h2 className="text-lg font-medium">Acceso gratuito</h2><Button variant="outline" className="mt-6" asChild><Link to="/"><ArrowLeft/>Volver al chat</Link></Button></div> : <>
     <p className="mt-3 text-sm leading-6 text-muted-foreground">{paid ? `Suscripción activa hasta el ${new Date(paid.current_period_end ?? '').toLocaleDateString('es-ES')}.` : query.data?.hasAccess ? `Tu prueba gratuita termina el ${new Date(query.data.trial.ends_at).toLocaleDateString('es-ES')}. No necesitas tarjeta.` : 'Tu prueba de 7 días ha terminado. Suscríbete para seguir utilizando tu espacio. Tus documentos se conservan.'}</p>
     {paid?.cancel_at_period_end && <p className="mt-3 text-sm text-warning">Cancelada la renovación. Mantienes el acceso hasta la fecha indicada.</p>}
     {paid?.status === 'past_due' && <p className="mt-3 text-sm text-warning">Hay un cobro pendiente. Actualiza tu método de pago para evitar la interrupción del acceso.</p>}
@@ -58,6 +59,7 @@ export function BillingView() {
       {query.data?.hasAccess && <Button variant="outline" asChild><Link to="/"><ArrowLeft/>Volver al chat</Link></Button>}
      </div>
     </section>
+    </>}
    </>}
    {clientSecret && <div className="mt-8"><EmbeddedCheckoutProvider stripe={stripeClient()} options={{ clientSecret }}><EmbeddedCheckout/></EmbeddedCheckoutProvider></div>}
   </div>

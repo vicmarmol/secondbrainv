@@ -34,6 +34,7 @@
 - [x] Verificar preguntas reales, errores y documentos enviados al modelo.
 
 ## Pagos
+- [ ] Roles protegidos admin/user, prueba desde registro, acceso gratuito para admin y comprobaciones con prueba vencida.
 - [x] Habilitar Stripe con confirmación del propietario.
 - [x] Configurar precio y suscripción; prueba gratuita de 7 días y bloqueo al terminar sin pago.
 - [x] Verificar reglas de acceso, aislamiento del modo de prueba y formulario en escritorio/móvil.
