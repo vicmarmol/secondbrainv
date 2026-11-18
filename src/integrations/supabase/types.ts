@@ -120,6 +120,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_sample: boolean
           title: string
           updated_at: string
           user_id: string
@@ -127,6 +128,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_sample?: boolean
           title: string
           updated_at?: string
           user_id?: string
@@ -134,6 +136,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_sample?: boolean
           title?: string
           updated_at?: string
           user_id?: string
@@ -150,6 +153,7 @@ export type Database = {
           external_url: string
           id: string
           inaccessible: boolean
+          is_sample: boolean
           search_vector: unknown
           source: Database["public"]["Enums"]["document_source"]
           source_modified_at: string | null
@@ -170,6 +174,7 @@ export type Database = {
           external_url: string
           id?: string
           inaccessible?: boolean
+          is_sample?: boolean
           search_vector?: unknown
           source: Database["public"]["Enums"]["document_source"]
           source_modified_at?: string | null
@@ -190,6 +195,7 @@ export type Database = {
           external_url?: string
           id?: string
           inaccessible?: boolean
+          is_sample?: boolean
           search_vector?: unknown
           source?: Database["public"]["Enums"]["document_source"]
           source_modified_at?: string | null
@@ -211,6 +217,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           id: string
+          is_sample: boolean
           role: Database["public"]["Enums"]["message_role"]
           user_id: string
         }
@@ -221,6 +228,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           id?: string
+          is_sample?: boolean
           role: Database["public"]["Enums"]["message_role"]
           user_id?: string
         }
@@ -231,6 +239,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           id?: string
+          is_sample?: boolean
           role?: Database["public"]["Enums"]["message_role"]
           user_id?: string
         }
@@ -299,6 +308,7 @@ export type Database = {
           finished_at: string | null
           id: string
           inaccessible_documents: number
+          is_sample: boolean
           new_documents: number
           progress: Json
           started_at: string
@@ -312,6 +322,7 @@ export type Database = {
           finished_at?: string | null
           id?: string
           inaccessible_documents?: number
+          is_sample?: boolean
           new_documents?: number
           progress?: Json
           started_at?: string
@@ -325,6 +336,7 @@ export type Database = {
           finished_at?: string | null
           id?: string
           inaccessible_documents?: number
+          is_sample?: boolean
           new_documents?: number
           progress?: Json
           started_at?: string
@@ -362,6 +374,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_sample_data: { Args: never; Returns: undefined }
       ensure_app_trial: {
         Args: never
         Returns: {

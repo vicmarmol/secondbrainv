@@ -5,3 +5,7 @@ export async function loadSampleData() {
 }
 export async function signOut() { await supabase.auth.signOut(); }
 export async function getCurrentEmail() { const { data } = await supabase.auth.getUser(); return data.user?.email ?? null; }
+export async function deleteSampleData() {
+ const { error } = await supabase.rpc('delete_sample_data');
+ if (error) throw new Error('No se han podido eliminar los datos de ejemplo.');
+}
