@@ -30,6 +30,7 @@ use the editor.
 <!-- LOVABLE:END -->
 
 ## Prototype architecture
+- Render assistant text (including streaming) with the shared react-markdown renderer and skipHtml; keep user messages plain text to avoid executing raw HTML.
 - UI components consume `src/services` only; services are migrated feature by feature from fixtures in `src/data` to Lovable Cloud tables (Library, Connections and Chat use real data), mapping lowercase DB enums to display labels in `src/types`, so the UI stays independent of storage.
 - Every app table carries `user_id` (default `auth.uid()`) and RLS limits authenticated users to their own rows; anon has no access. App pages live under `src/routes/_authenticated/` so they require a session.
 - New users get one connections row per source from an `auth.users` trigger; example data is only inserted per user by the `load_sample_data()` RPC (Ajustes), and never influence production chat responses unless they are explicitly loaded.

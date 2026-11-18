@@ -74,6 +74,14 @@
 .assistant-message { margin: 0 0 34px; animation: rise-in .25s ease; }
 .assistant-heading { display: flex; gap: 9px; align-items: center; font-size: 12px; font-weight: 600; margin-bottom: 17px; }
 .message-text { font-size: 14px; line-height: 1.85; white-space: pre-wrap; }
+.assistant-markdown { white-space: normal; overflow-wrap: anywhere; }
+.assistant-markdown p, .assistant-markdown ul, .assistant-markdown ol { margin: 0 0 1em; }
+.assistant-markdown > :last-child { margin-bottom: 0; }
+.assistant-markdown ul { list-style-type: disc; padding-left: 1.5em; }
+.assistant-markdown ol { list-style-type: decimal; padding-left: 1.5em; }
+.assistant-markdown li { margin: .25em 0; }
+.assistant-markdown li > p { margin: 0 0 .5em; }
+.assistant-markdown strong { font-weight: 700; }
 .citation-heading { margin-top: 23px; font-size: 10px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 1px; }
 .citations { display: flex; flex-wrap: wrap; gap: 8px; margin: 9px 0 10px; }
 .citation-chip { height: auto; max-width: 100%; padding: 10px 12px; justify-content: flex-start; text-align: left; white-space: normal; background: var(--background); box-shadow: none; gap: 9px; }
