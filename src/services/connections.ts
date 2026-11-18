@@ -7,13 +7,14 @@ const statusLabel: Record<Row['status'], Connection['status']> = { conectado: 'C
 const sourceById: Record<string, Source> = { notion: 'Notion', drive: 'Drive', dropbox: 'Dropbox', granola: 'Granola', garmin: 'Garmin', gmail: 'Gmail', whatsapp: 'WhatsApp' };
 
 export function toConnection(row: Row): Connection {
- return { id: row.id, name: row.provider, source: sourceById[row.source] ?? 'Subidos manualmente', status: statusLabel[row.status], lastSync: row.last_synced_at, documentCount: row.document_count };
+ return { id: row.id, name: row.provider, source: sourceById[row.source] ?? 'Subidos manualmente', status: statusLabel[row.status], lastSync: row.last_synced_at, documentCount: row.document_count, attention: row.attention_message };
 }
 
 export async function getConnections(): Promise<Connection[]> {
  const { data, error } = await supabase.from('connections').select('*').order('created_at').order('source');
  if (error) throw new Error('No se han podido cargar las conexiones.');
- return (data ?? []).map(toConnection);
+ const runs = (await supabase.from('sync_runs').select('connection_id,trigger').eq('status', 'completada').order('finished_at', { ascending: false }).limit(100)).data ?? [];
+ return (data ?? []).map(row => ({ ...toConnection(row), lastSyncTrigger: (runs.find(r => r.connection_id === row.id)?.trigger as 'manual' | 'automatica' | undefined) ?? null }));
 }
 
 async function update(id: string, values: Partial<Pick<Row, 'status' | 'last_synced_at'>>) {

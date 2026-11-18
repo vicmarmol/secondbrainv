@@ -4,6 +4,7 @@ import { CheckCircle2, Loader2, RefreshCw, Plug, Unplug } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { beginNotionSync, getNotionState, stepNotionSync, syncNotion, startNotionConnect, completeNotionConnect, disconnectNotion, type NotionState, type NotionProgress } from '@/services/notion';
+import { timeAgo } from '@/lib/relative-time';
 import type { Connection } from '@/types/second-brain';
 
 const fmt = (iso: string | null) => iso ? new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso)) : 'Nunca';
@@ -67,8 +68,9 @@ export function NotionConnection({ connection, onRefresh }: { connection: Connec
  return <li className="rounded-lg border border-border bg-card p-4">
   <div className="flex flex-wrap items-center gap-4">
    <div className="min-w-0 basis-full sm:basis-0 sm:flex-1">
-     <div className="flex items-center gap-2 font-medium">Notion <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary">{connection.status}</span></div>
-    <div className="mt-1 text-xs text-muted-foreground">{connection.documentCount} documentos · Última sincronización: {fmt(connection.lastSync)}</div>
+     <div className="flex items-center gap-2 font-medium">Notion <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary">{connection.status}</span>{connection.attention && <span className="rounded bg-destructive/10 px-1.5 py-0.5 text-[10px] text-destructive">Requiere atención</span>}</div>
+    <div className="mt-1 text-xs text-muted-foreground">{connection.documentCount} documentos · Última sincronización: <span title={fmt(connection.lastSync)}>{timeAgo(connection.lastSync)}</span>{connection.lastSync && connection.lastSyncTrigger && ` (${connection.lastSyncTrigger === 'automatica' ? 'automática' : 'manual'})`}</div>
+    {connection.attention && <div className="mt-1 text-xs text-destructive">{connection.attention}</div>}
    </div>
     <div className="flex flex-wrap gap-2">
      {connected && <Button variant="outline" size="sm" disabled={busy} onClick={run}>{busy ? <Loader2 className="animate-spin"/> : <RefreshCw/>}{active ? 'Reanudar sincronización' : state?.hasMore ? 'Continuar sincronización' : 'Sincronizar ahora'}</Button>}
@@ -80,6 +82,6 @@ export function NotionConnection({ connection, onRefresh }: { connection: Connec
   {progress?.done && !progress.error && <p role="status" className="mt-3 flex items-center gap-2 text-sm text-primary"><CheckCircle2 className="size-4 shrink-0"/>{progress.newDocuments} documentos nuevos · {progress.updatedDocuments} actualizados · {progress.inaccessibleDocuments} sin acceso</p>}
   {(state?.hasMore || progress?.hasMore) && <p className="mt-3 text-sm text-muted-foreground">Quedan páginas por revisar. Continúa en la siguiente sincronización.</p>}
   {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
-  {!!state?.runs.length && <div className="mt-4 border-t border-border pt-3"><h2 className="text-xs font-medium text-muted-foreground">Últimas sincronizaciones</h2><ul className="mt-2 space-y-2">{state.runs.map(r => <li key={r.id} className="flex flex-wrap justify-between gap-2 text-xs"><span>{fmt(r.started_at)}</span><span className={r.status === 'error' ? 'text-destructive' : 'text-muted-foreground'}>{r.status === 'completada' ? `${r.new_documents} nuevos · ${r.updated_documents} actualizados · ${r.inaccessible_documents} sin acceso` : r.status === 'error' ? r.error_message ?? 'Error' : 'En curso'}</span></li>)}</ul></div>}
+  {!!state?.runs.length && <div className="mt-4 border-t border-border pt-3"><h2 className="text-xs font-medium text-muted-foreground">Últimas sincronizaciones</h2><ul className="mt-2 space-y-2">{state.runs.map(r => <li key={r.id} className="flex flex-wrap justify-between gap-2 text-xs"><span>{fmt(r.started_at)} · {r.trigger === 'automatica' ? 'Automática' : 'Manual'}</span><span className={r.status === 'error' ? 'text-destructive' : 'text-muted-foreground'}>{r.status === 'completada' ? `${r.new_documents} nuevos · ${r.updated_documents} actualizados · ${r.inaccessible_documents} sin acceso` : r.status === 'error' ? r.error_message ?? 'Error' : 'En curso'}</span></li>)}</ul></div>}
  </li>;
 }

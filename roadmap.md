@@ -42,3 +42,6 @@
 - [ ] Completar compra de prueba y comprobar confirmación: envío automatizado no finalizado; requiere prueba manual.
 
 - [x] Explicar cómo probar un pago sin dinero real.
+
+## Sincronización automática
+- [x] Interfaz común de conector, Notion adaptado, tarea horaria genérica, sin solapes, errores con "Requiere atención" y "hace X (automática/manual)"; ejecución real verificada.

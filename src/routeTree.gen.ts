@@ -18,6 +18,7 @@ import { Route as AuthenticatedBibliotecaRouteImport } from './routes/_authentic
 import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
 import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
 import { Route as ApiChatAnswerRouteImport } from './routes/api/chat-answer'
+import { Route as ApiPublicJobsSyncConnectionsRouteImport } from './routes/api/public/jobs/sync-connections'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicOauthNotionReturnRouteImport } from './routes/api/public/oauth/notion/return'
 
@@ -66,6 +67,12 @@ const ApiChatAnswerRoute = ApiChatAnswerRouteImport.update({
   path: '/api/chat-answer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicJobsSyncConnectionsRoute =
+  ApiPublicJobsSyncConnectionsRouteImport.update({
+    id: '/api/public/jobs/sync-connections',
+    path: '/api/public/jobs/sync-connections',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -88,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
+  '/api/public/jobs/sync-connections': typeof ApiPublicJobsSyncConnectionsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
@@ -100,6 +108,7 @@ export interface FileRoutesByTo {
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/': typeof AuthenticatedIndexRoute
+  '/api/public/jobs/sync-connections': typeof ApiPublicJobsSyncConnectionsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
@@ -114,6 +123,7 @@ export interface FileRoutesById {
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/api/public/jobs/sync-connections': typeof ApiPublicJobsSyncConnectionsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/conexiones'
     | '/suscripcion'
     | '/api/chat-answer'
+    | '/api/public/jobs/sync-connections'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
   fileRoutesByTo: FileRoutesByTo
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/suscripcion'
     | '/api/chat-answer'
     | '/'
+    | '/api/public/jobs/sync-connections'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
   id:
@@ -153,6 +165,7 @@ export interface FileRouteTypes {
     | '/_authenticated/suscripcion'
     | '/api/chat-answer'
     | '/_authenticated/'
+    | '/api/public/jobs/sync-connections'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
   fileRoutesById: FileRoutesById
@@ -162,6 +175,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   RegistroRoute: typeof RegistroRoute
   ApiChatAnswerRoute: typeof ApiChatAnswerRoute
+  ApiPublicJobsSyncConnectionsRoute: typeof ApiPublicJobsSyncConnectionsRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicOauthNotionReturnRoute: typeof ApiPublicOauthNotionReturnRoute
 }
@@ -231,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatAnswerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/jobs/sync-connections': {
+      id: '/api/public/jobs/sync-connections'
+      path: '/api/public/jobs/sync-connections'
+      fullPath: '/api/public/jobs/sync-connections'
+      preLoaderRoute: typeof ApiPublicJobsSyncConnectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -272,6 +293,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   RegistroRoute: RegistroRoute,
   ApiChatAnswerRoute: ApiChatAnswerRoute,
+  ApiPublicJobsSyncConnectionsRoute: ApiPublicJobsSyncConnectionsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicOauthNotionReturnRoute: ApiPublicOauthNotionReturnRoute,
 }

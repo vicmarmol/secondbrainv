@@ -5,5 +5,5 @@ export interface Document { id: string; title: string; source: Source; type: Doc
 export interface Citation { document: Document; chunkId: string }
 export interface Message { id: string; role: 'user' | 'assistant'; content: string; citations: Citation[]; kind?: 'conflict' | 'rides' | undefined; retrieved?: { document_id: string; title: string; source: string; modified_at: string; excerpt: string; rank: number }[]; conflicts?: { document_id: string; version: string }[]; difference?: string; feedback?: 'helpful' | 'unhelpful' | undefined }
 export interface Conversation { id: string; title: string; group: 'Hoy' | 'Ayer' | 'Anteriores'; updatedAt?: string; messages: Message[] }
-export interface Connection { id: string; name: string; source: Source; status: 'Conectado' | 'Desconectado' | 'Próximamente'; lastSync: string | null; documentCount: number }
+export interface Connection { id: string; name: string; source: Source; status: 'Conectado' | 'Desconectado' | 'Próximamente'; lastSync: string | null; documentCount: number; attention?: string | null; lastSyncTrigger?: 'manual' | 'automatica' | null }
 export interface RideWeek { week: string; current: number; previous: number }

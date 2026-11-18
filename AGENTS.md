@@ -48,3 +48,4 @@ use the editor.
 - Keep roles in protected user_roles with own-row SELECT only and no app writes; resolve has_role only server-side and return a free-access entitlement, never role rows, to presentation code. Signup triggers create the default role and trial, and has_app_access enforces both role and billing rules without widening data ownership.
 - Payments use the shared gateway Stripe client, signed public webhooks and authenticated embedded checkout; user identity and price are derived server-side to prevent tampering.
 - "Ver como" (admin preview) is in-memory UI state in src/lib/view-as.ts, applied only when server billing reports freeAccess; it never changes queries, roles or RLS.
+- Source sync goes through one connector interface (src/lib/sync): each source registers a resumable `step`; the shared engine (leases, errors, attention flag) serves both manual sync and the hourly managed job, so new sources only add and register a connector.

@@ -79,6 +79,7 @@ export type Database = {
       }
       connections: {
         Row: {
+          attention_message: string | null
           created_at: string
           document_count: number
           id: string
@@ -91,6 +92,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          attention_message?: string | null
           created_at?: string
           document_count?: number
           id?: string
@@ -103,6 +105,7 @@ export type Database = {
           user_id?: string
         }
         Update: {
+          attention_message?: string | null
           created_at?: string
           document_count?: number
           id?: string
@@ -309,10 +312,12 @@ export type Database = {
           id: string
           inaccessible_documents: number
           is_sample: boolean
+          lease_until: string | null
           new_documents: number
           progress: Json
           started_at: string
           status: Database["public"]["Enums"]["sync_status"]
+          trigger: string
           updated_documents: number
           user_id: string
         }
@@ -323,10 +328,12 @@ export type Database = {
           id?: string
           inaccessible_documents?: number
           is_sample?: boolean
+          lease_until?: string | null
           new_documents?: number
           progress?: Json
           started_at?: string
           status?: Database["public"]["Enums"]["sync_status"]
+          trigger?: string
           updated_documents?: number
           user_id?: string
         }
@@ -337,10 +344,12 @@ export type Database = {
           id?: string
           inaccessible_documents?: number
           is_sample?: boolean
+          lease_until?: string | null
           new_documents?: number
           progress?: Json
           started_at?: string
           status?: Database["public"]["Enums"]["sync_status"]
+          trigger?: string
           updated_documents?: number
           user_id?: string
         }
@@ -389,15 +398,26 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      finish_notion_sync: {
-        Args: {
-          new_count: number
-          sync_id: string
-          sync_progress: Json
-          updated_count: number
-        }
-        Returns: number
-      }
+      finish_notion_sync:
+        | {
+            Args: {
+              new_count: number
+              sync_id: string
+              sync_progress: Json
+              updated_count: number
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              new_count: number
+              owner: string
+              sync_id: string
+              sync_progress: Json
+              updated_count: number
+            }
+            Returns: number
+          }
       has_app_access: { Args: never; Returns: boolean }
       has_role: {
         Args: {

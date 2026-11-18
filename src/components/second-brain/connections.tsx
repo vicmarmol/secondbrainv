@@ -3,6 +3,7 @@ import { RefreshCw, Plug, Unplug } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { getConnections, setConnected, syncNow } from '@/services';
+import { timeAgo } from '@/lib/relative-time';
 import type { Connection } from '@/types/second-brain';
 import { NotionConnection } from './notion-connection';
 
@@ -30,7 +31,7 @@ export function ConnectionsView() {
    return <li key={c.id} className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4">
     <div className="min-w-0 flex-1">
      <div className="flex items-center gap-2 font-medium">{c.name}<span className={`rounded px-1.5 py-0.5 text-[10px] ${on ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>{c.status}</span></div>
-     <div className="mt-1 text-xs text-muted-foreground">{c.documentCount} documentos · Última sincronización: {fmt(c.lastSync)}</div>
+     <div className="mt-1 text-xs text-muted-foreground">{c.documentCount} documentos · Última sincronización: <span title={fmt(c.lastSync)}>{timeAgo(c.lastSync)}</span>{c.lastSync && c.lastSyncTrigger && ` (${c.lastSyncTrigger === 'automatica' ? 'automática' : 'manual'})`}</div>
     </div>
     {!soon && <div className="flex gap-2">
      {on && <Button variant="outline" size="sm" disabled={busy === c.id} onClick={() => run(c.id, () => syncNow(c.id), `${c.name} sincronizado`)}><RefreshCw/>Sincronizar ahora</Button>}
