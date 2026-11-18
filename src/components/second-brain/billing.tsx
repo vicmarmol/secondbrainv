@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { getBilling, beginCheckout, confirmCheckout, billingPortal } from '@/services/billing';
 import { paidAccess } from '@/lib/billing';
 import { toast } from 'sonner';
+import { useViewAs, applyViewAs } from '@/lib/view-as';
 let stripePromise: ReturnType<typeof loadStripe> | undefined;
 function stripeClient() {
  const token = import.meta.env['VITE_PAYMENTS_CLIENT_TOKEN'];
@@ -17,7 +18,10 @@ function stripeClient() {
 }
 export function BillingView() {
  const router = useRouter();
- const query = useQuery({ queryKey: ['billing'], queryFn: getBilling, refetchInterval: 10000 });
+ const rawQuery = useQuery({ queryKey: ['billing'], queryFn: getBilling, refetchInterval: 10000 });
+ const viewAs = useViewAs();
+ const previewing = !!viewAs && !!rawQuery.data?.freeAccess;
+ const query = { ...rawQuery, data: rawQuery.data ? applyViewAs(rawQuery.data, viewAs) : undefined, refetch: rawQuery.refetch };
  const [clientSecret, setClientSecret] = useState<string | null>(null);
  const [busy, setBusy] = useState(false);
  const [paymentPending, setPaymentPending] = useState(false);
@@ -54,7 +58,7 @@ export function BillingView() {
      <h2 className="text-lg font-medium">Second Brain</h2><div className="mt-3 flex items-baseline gap-2"><span className="text-4xl font-semibold">5 €</span><span className="text-muted-foreground">/ mes</span></div>
      <p className="mt-3 text-sm text-muted-foreground">Chat, biblioteca y conexiones en tu espacio personal.</p>
      <p className="mt-2 text-xs text-muted-foreground">Impuestos incluidos. Renovación mensual. Puedes cancelar antes del siguiente cobro.</p>
-     <div className="mt-6 flex flex-wrap gap-3">{paid || query.data?.subscriptions.length ? <Button onClick={portal} disabled={busy}><ExternalLink/>Gestionar suscripción</Button> : <Button onClick={checkout} disabled={busy || !!clientSecret || !token}><CreditCard/>{busy ? 'Abriendo pago…' : 'Suscribirme'}</Button>}
+     <div className="mt-6 flex flex-wrap gap-3">{paid || query.data?.subscriptions.length ? <Button onClick={portal} disabled={busy}><ExternalLink/>Gestionar suscripción</Button> : <Button onClick={checkout} disabled={busy || !!clientSecret || !token || previewing} title={previewing ? 'Desactivado en la vista previa' : undefined}><CreditCard/>{busy ? 'Abriendo pago…' : 'Suscribirme'}</Button>}
       {query.data?.subscriptions.length && !paid ? <Button variant="outline" disabled={busy || !!clientSecret || !token} onClick={checkout}><CreditCard/>Reactivar suscripción</Button> : null}
       {query.data?.hasAccess && <Button variant="outline" asChild><Link to="/"><ArrowLeft/>Volver al chat</Link></Button>}
      </div>

@@ -169,3 +169,7 @@
 .history-actions button { width: 26px; height: 26px; color: var(--muted-foreground); }
 .history-actions svg { width: 13px; height: 13px; }
 .history-rename { flex: 1; min-width: 0; height: 32px; margin: 2px 0 2px 8px; padding: 0 8px; font-size: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--background); color: var(--foreground); }
+
+.view-as { display: flex; flex-direction: column; gap: .25rem; padding: .25rem .75rem .5rem; font-size: .7rem; color: var(--muted-foreground); }
+.view-as select { width: 100%; border: 1px solid var(--border); border-radius: .375rem; background: var(--background); color: var(--foreground); padding: .3rem .4rem; font-size: .75rem; }
+.view-as-banner { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .75rem; padding: .5rem 1rem; background: var(--warning-surface); color: var(--warning); border-bottom: 1px solid var(--border); font-size: .8rem; }
