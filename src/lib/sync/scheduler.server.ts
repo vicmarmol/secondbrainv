@@ -1,4 +1,5 @@
 import { paidAccess, trialAccess } from '../billing';
+import { approvalAllowsAccess } from '../approval';
 import { registeredSources } from './registry.server';
 import { startSync, stepSync } from './engine.server';
 import type { Db } from './types';
@@ -9,6 +10,8 @@ async function hasAccess(db: Db, userId: string) {
  const roles = (await db.from('user_roles').select('role').eq('user_id', userId)).data ?? [];
  if (roles.some(r => r.role === 'admin')) return true;
  if (!roles.some(r => r.role === 'user')) return false;
+ const approval = await db.from('user_approvals').select('status').eq('user_id', userId).maybeSingle();
+ if (approval.error || !approvalAllowsAccess(false, approval.data?.status)) return false;
  const trial = (await db.from('app_trials').select('ends_at').eq('user_id', userId).maybeSingle()).data;
  if (trial && trialAccess(trial.ends_at)) return true;
  const subs = (await db.from('subscriptions').select('status,current_period_end,price_id').eq('user_id', userId).eq('environment', 'live')).data ?? [];
@@ -43,6 +46,10 @@ export async function advanceScheduledRuns(db: Db) {
   if (!data?.length) return false;
   for (const run of data) {
    if (Date.now() > deadline) return true;
+   if (!await hasAccess(db, run.user_id)) {
+    await db.from('sync_runs').update({ status: 'error', finished_at: new Date().toISOString(), lease_until: null, error_message: 'La cuenta no tiene acceso para sincronizar.' }).eq('id', run.id).eq('user_id', run.user_id);
+    continue;
+   }
    // A failure is recorded on that run; the loop continues with the others.
    await stepSync(db, run.user_id, run.id).catch(e => console.error('scheduled sync step failed', e instanceof Error ? e.message : e));
   }

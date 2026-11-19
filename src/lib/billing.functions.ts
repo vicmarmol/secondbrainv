@@ -9,8 +9,9 @@ export const getBillingState = createServerFn({ method: 'POST' }).middleware([re
  const subscriptions = await context.supabase.from('subscriptions').select('*').eq('user_id', context.userId).eq('environment', data.environment).order('created_at', { ascending: false });
  const access = await context.supabase.rpc('has_app_access');
  const freeAccess = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
- if (subscriptions.error || access.error || freeAccess.error) throw new Error('No se ha podido comprobar tu suscripción.');
- return { trial: trial.data, subscriptions: subscriptions.data, hasAccess: access.data, freeAccess: freeAccess.data, serverNow: new Date().toISOString() };
+ const approval = await context.supabase.from('user_approvals').select('status').eq('user_id', context.userId).maybeSingle();
+ if (subscriptions.error || access.error || freeAccess.error || approval.error) throw new Error('No se ha podido comprobar tu suscripción.');
+ return { trial: trial.data, subscriptions: subscriptions.data, hasAccess: access.data, freeAccess: freeAccess.data, approvalStatus: approval.data?.status ?? 'pendiente', serverNow: new Date().toISOString() };
 });
 async function resolveOrCreateCustomer(
  stripe: ReturnType<(typeof import('./stripe.server'))['createStripeClient']>,
@@ -38,6 +39,8 @@ export const startSubscriptionCheckout = createServerFn({ method: 'POST' }).midd
   const freeAccess = await context.supabase.rpc('has_role', { _user_id: context.userId, _role: 'admin' });
   if (freeAccess.error) throw new Error('No se ha podido comprobar tu acceso.');
   if (freeAccess.data) return { error: 'Tu cuenta tiene acceso gratuito y no necesita suscripción.' };
+  const approval = await context.supabase.from('user_approvals').select('status').eq('user_id', context.userId).maybeSingle();
+  if (approval.error || approval.data?.status !== 'aprobado') return { error: 'Tu cuenta necesita aprobación antes de suscribirte.' };
   const stripe = createStripeClient(data.environment);
   const { data: auth, error } = await context.supabase.auth.getUser();
   if (error || !auth.user) throw new Error('Inicia sesión de nuevo.');

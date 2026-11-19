@@ -17,6 +17,11 @@ export const Route = createFileRoute('/_authenticated')({
   const { data } = await supabase.auth.getUser();
   if (!data.user) throw redirect({ to: '/auth' });
   const billing = await withRetry(getBilling);
+  if (!billing.freeAccess && billing.approvalStatus !== 'aprobado') {
+   if (location.pathname !== '/aprobacion') throw redirect({ to: '/aprobacion' });
+   return { user: data.user };
+  }
+  if (location.pathname === '/aprobacion') throw redirect({ to: billing.hasAccess ? '/' : '/suscripcion' });
   if (!billing.hasAccess && location.pathname !== '/suscripcion') throw redirect({ to: '/suscripcion' });
   return { user: data.user };
  },

@@ -1,5 +1,10 @@
 # Second Brain
 
+## Aprobación de cuentas
+- [x] Estado pendiente/aprobado/rechazado y prueba desde aprobación, protección de datos y sincronización.
+- [x] Pantalla de espera/rechazo y solicitudes en Ajustes con contador para admin; conservar Ver como.
+- [x] Verificar aprobación y rechazo mediante Ajustes con dos cuentas temporales, bloqueo RLS y prueba exacta de siete días; cuentas retiradas. Sin dominio de correo configurado, solo indicador en la app.
+
 - [x] Estructura de datos tipados y servicios simulados.
 - [x] Navegación adaptable y selector claro/oscuro.
 - [x] Chat con respuestas progresivas, citas, desacuerdos y comparación ciclista.

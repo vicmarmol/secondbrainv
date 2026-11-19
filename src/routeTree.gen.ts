@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAjustesRouteImport } from './routes/_authenticated/ajustes'
+import { Route as AuthenticatedAprobacionRouteImport } from './routes/_authenticated/aprobacion'
 import { Route as AuthenticatedBibliotecaRouteImport } from './routes/_authenticated/biblioteca'
 import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
 import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
@@ -44,6 +45,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
 const AuthenticatedAjustesRoute = AuthenticatedAjustesRouteImport.update({
   id: '/ajustes',
   path: '/ajustes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAprobacionRoute = AuthenticatedAprobacionRouteImport.update({
+  id: '/aprobacion',
+  path: '/aprobacion',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedBibliotecaRoute = AuthenticatedBibliotecaRouteImport.update({
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/registro': typeof RegistroRoute
   '/ajustes': typeof AuthenticatedAjustesRoute
+  '/aprobacion': typeof AuthenticatedAprobacionRoute
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/registro': typeof RegistroRoute
   '/ajustes': typeof AuthenticatedAjustesRoute
+  '/aprobacion': typeof AuthenticatedAprobacionRoute
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/registro': typeof RegistroRoute
   '/_authenticated/ajustes': typeof AuthenticatedAjustesRoute
+  '/_authenticated/aprobacion': typeof AuthenticatedAprobacionRoute
   '/_authenticated/biblioteca': typeof AuthenticatedBibliotecaRoute
   '/_authenticated/conexiones': typeof AuthenticatedConexionesRoute
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/registro'
     | '/ajustes'
+    | '/aprobacion'
     | '/biblioteca'
     | '/conexiones'
     | '/suscripcion'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/registro'
     | '/ajustes'
+    | '/aprobacion'
     | '/biblioteca'
     | '/conexiones'
     | '/suscripcion'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/registro'
     | '/_authenticated/ajustes'
+    | '/_authenticated/aprobacion'
     | '/_authenticated/biblioteca'
     | '/_authenticated/conexiones'
     | '/_authenticated/suscripcion'
@@ -217,6 +229,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAjustesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/aprobacion': {
+      id: '/_authenticated/aprobacion'
+      path: '/aprobacion'
+      fullPath: '/aprobacion'
+      preLoaderRoute: typeof AuthenticatedAprobacionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/biblioteca': {
       id: '/_authenticated/biblioteca'
       path: '/biblioteca'
@@ -271,6 +290,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAjustesRoute: typeof AuthenticatedAjustesRoute
+  AuthenticatedAprobacionRoute: typeof AuthenticatedAprobacionRoute
   AuthenticatedBibliotecaRoute: typeof AuthenticatedBibliotecaRoute
   AuthenticatedConexionesRoute: typeof AuthenticatedConexionesRoute
   AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
@@ -279,6 +299,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAjustesRoute: AuthenticatedAjustesRoute,
+  AuthenticatedAprobacionRoute: AuthenticatedAprobacionRoute,
   AuthenticatedBibliotecaRoute: AuthenticatedBibliotecaRoute,
   AuthenticatedConexionesRoute: AuthenticatedConexionesRoute,
   AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,

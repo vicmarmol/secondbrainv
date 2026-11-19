@@ -12,7 +12,10 @@ const db = {
   state.calls.push(name);
   return { data: name === 'has_role' ? state.freeAccess : name === 'has_app_access' ? state.hasAccess : { started_at: '2026-11-01T00:00:00Z', ends_at: '2026-11-08T00:00:00Z' }, error: null };
  },
- from: () => ({ select: () => ({ eq: () => ({ eq: () => ({ order: async () => ({ data: [], error: null }) }) }) }) }),
+ from: () => {
+  const builder = { select() { return this; }, eq() { return this; }, order: async () => ({ data: [], error: null }), maybeSingle: async () => ({ data: { status: 'aprobado' }, error: null }) };
+  return builder;
+ },
 };
 type StateResult = { hasAccess: boolean; freeAccess: boolean; trial: { ends_at: string } };
 const billingState = getBillingState as unknown as (args: unknown) => Promise<StateResult>;

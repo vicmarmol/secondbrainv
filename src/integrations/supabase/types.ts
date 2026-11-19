@@ -363,6 +363,30 @@ export type Database = {
           },
         ]
       }
+      user_approvals: {
+        Row: {
+          approved_at: string | null
+          decided_at: string | null
+          registered_at: string
+          status: Database["public"]["Enums"]["approval_status"]
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          decided_at?: string | null
+          registered_at?: string
+          status?: Database["public"]["Enums"]["approval_status"]
+          user_id?: string
+        }
+        Update: {
+          approved_at?: string | null
+          decided_at?: string | null
+          registered_at?: string
+          status?: Database["public"]["Enums"]["approval_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           role: Database["public"]["Enums"]["app_role"]
@@ -383,6 +407,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      decide_user_approval: {
+        Args: {
+          decision: Database["public"]["Enums"]["approval_status"]
+          target_user: string
+        }
+        Returns: undefined
+      }
       delete_sample_data: { Args: never; Returns: undefined }
       ensure_app_trial: {
         Args: never
@@ -452,6 +483,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      approval_status: "pendiente" | "aprobado" | "rechazado"
       connection_status: "conectado" | "desconectado" | "proximamente"
       document_source:
         | "notion"
@@ -592,6 +624,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      approval_status: ["pendiente", "aprobado", "rechazado"],
       connection_status: ["conectado", "desconectado", "proximamente"],
       document_source: [
         "notion",
