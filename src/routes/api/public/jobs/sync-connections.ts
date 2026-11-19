@@ -11,12 +11,12 @@ async function background(task: Promise<unknown>) {
  task.catch(() => undefined);
 }
 
-async function drive(origin: string) {
+async function drive(origin: string, authorization: string) {
  const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
  const { advanceScheduledRuns } = await import('@/lib/sync/scheduler.server');
  const remaining = await advanceScheduledRuns(supabaseAdmin);
  // Each slice is its own short invocation; chain the next one while runs remain.
- if (remaining) await fetch(`${origin}/api/public/jobs/sync-connections`, { method: 'PUT' }).catch(() => undefined);
+ if (remaining) await fetch(`${origin}/api/public/jobs/sync-connections`, { method: 'PUT', headers: { authorization }, redirect: 'manual' }).catch(() => undefined);
 }
 
 export const Route = createFileRoute('/api/public/jobs/sync-connections')({
@@ -28,12 +28,14 @@ export const Route = createFileRoute('/api/public/jobs/sync-connections')({
    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
    const { startScheduledRuns } = await import('@/lib/sync/scheduler.server');
    const summary = await startScheduledRuns(supabaseAdmin);
-   await background(drive(new URL(request.url).origin));
+   await background(drive(new URL(request.url).origin, request.headers.get('authorization') ?? ''));
    return Response.json(summary);
   },
   // Continuation: takes no input and only advances automatic runs that already exist.
   PUT: async ({ request }) => {
-   await background(drive(new URL(request.url).origin));
+   const authFailure = await authenticateCronRequest(request);
+   if (authFailure) return authFailure;
+   await background(drive(new URL(request.url).origin, request.headers.get('authorization') ?? ''));
    return new Response(null, { status: 202 });
   },
  } },

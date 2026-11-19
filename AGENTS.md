@@ -52,3 +52,4 @@ use the editor.
 - Connectors declare capabilities (read, optional create); chat saving goes through the generic src/lib/source-write layer, which stores created documents with the same external_id/hash as sync and rolls back the source write if the local insert fails, so chat holds no source-specific logic.
 
 - Account approvals live in an owner-readable, write-protected table; pending email lists require server-verified admin before privileged auth reads, and decisions use a locked admin-checked database function to prevent trial resets.
+- Scheduled sync POST and PUT both use managed cron authentication; continuations forward only the validated bearer to the same origin without following redirects, keeping credentials server-only.
