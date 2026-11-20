@@ -199,6 +199,33 @@
 .save-field select, .save-field input, .save-field textarea { width: 100%; min-width: 0; box-sizing: border-box; }
 
 /* Public landing: isolated from the workspace and authentication form. */
+.welcome-page { min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 36px 28px 24px; background: var(--background); }
+.welcome-content { width: 100%; max-width: 880px; text-align: center; }
+.welcome-brand { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; font-size: 18px; }
+.welcome-steps { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 27px 0; list-style: none; font-size: 12px; color: var(--muted-foreground); }
+.welcome-steps li { display: flex; align-items: center; gap: 7px; }
+.welcome-steps li[aria-current] { color: var(--primary); font-weight: 600; }
+.welcome-steps li span { width: 23px; height: 23px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--border); }
+.welcome-steps li[aria-current] span { background: var(--accent); border-color: var(--accent); }
+.welcome-heading h1 { font-size: 32px; font-weight: 600; line-height: 1.3; }
+.welcome-heading > p { max-width: 530px; margin: 12px auto 28px; font-size: 14px; line-height: 1.8; color: var(--muted-foreground); }
+.welcome-sources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; text-align: left; }
+.welcome-source { min-width: 0; padding: 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); }
+.welcome-notion { box-shadow: var(--shadow-soft); }
+.welcome-source-icon { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 18px; }
+.welcome-notion-icon { width: 30px; height: 30px; margin: 4px 0 22px; font: bold 25px Georgia, serif; border: 2px solid currentColor; border-radius: 4px; }
+.welcome-source h2 { font-size: 17px; line-height: 1.4; font-weight: 600; }
+.welcome-source > p { margin-top: 6px; font-size: 13px; color: var(--muted-foreground); line-height: 1.65; }
+.welcome-connect { width: 100%; margin-top: 21px; }
+.welcome-source > .welcome-source-help { font-size: 11px; line-height: 1.7; margin-top: 12px; }
+.welcome-soon { background: var(--muted); color: var(--muted-foreground); }
+.welcome-soon-label { display: inline-block; margin-top: 22px; font-size: 11px; }
+.welcome-sample { margin-top: 20px; }
+.welcome-sample > a, .welcome-sample > button { height: auto; white-space: normal; font-size: 12px; line-height: 1.7; }
+.welcome-error, .welcome-source > .welcome-error { margin-top: 10px; color: var(--warning); font-size: 12px; line-height: 1.7; }
+.welcome-footer { margin-top: 22px; color: var(--muted-foreground); }
+.welcome-footer button { font-size: 11px; }
+@media (max-width: 640px) { .welcome-page { align-items: flex-start; padding: 28px 20px 20px; } .welcome-heading h1 { font-size: 28px; } .welcome-sources { grid-template-columns: 1fr; gap: 12px; } .welcome-source { padding: 21px; } .welcome-soon { display: grid; grid-template-columns: 38px 1fr auto; column-gap: 14px; align-items: center; } .welcome-soon .welcome-source-icon { grid-row: 1 / 3; margin: 0; } .welcome-soon h2 { font-size: 15px; } .welcome-soon > p { grid-column: 2; font-size: 12px; margin-top: 3px; } .welcome-soon-label { grid-column: 3; grid-row: 1 / 3; margin: 0; font-size: 10px; } }
 .registration-card { padding: 28px 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); box-shadow: var(--shadow-soft); }
 .registration-card .google-signup-button { --google-background: #FFFFFF; --google-border: #747775; --google-text: #1F1F1F; background: var(--google-background); border-color: var(--google-border); color: var(--google-text); }
 .dark .registration-card .google-signup-button { --google-background: #131314; --google-border: #8E918F; --google-text: #E3E3E3; }

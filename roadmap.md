@@ -1,5 +1,10 @@
 # Second Brain
 
+## Bienvenida sin fuentes
+- [ ] Añadir /bienvenida sin barra lateral, Notion y fuentes futuras; acciones y estados de carga/error.
+- [ ] Redirigir entrada al chat con cero conexiones activas y cero documentos, incluyendo ejemplos; conservar autorización y Ver como.
+- [ ] Verificar reglas, carga de ejemplos, cancelación de Notion y navegación con una cuenta temporal.
+
 ## Registro con invitación
 - [x] Pantalla /registro y enlaces de la landing; conservar login.
 - [x] Código temporal de una hora y canje único autenticado antes de comprobar aprobación; aviso sin editar la espera.
