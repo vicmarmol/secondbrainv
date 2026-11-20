@@ -1,5 +1,8 @@
 # Second Brain
 
+## Cuenta de prueba de bienvenida
+- [x] Cuenta demo permanente, aprobada y sin fuentes ni documentos, con credenciales para el titular; verificar que abre /bienvenida.
+
 ## Bienvenida sin fuentes
 - [x] Añadir /bienvenida sin barra lateral, Notion y fuentes futuras; acciones y estados de carga/error.
 - [x] Redirigir entrada al chat con cero conexiones activas y cero documentos, incluyendo ejemplos; conservar autorización y Ver como.
