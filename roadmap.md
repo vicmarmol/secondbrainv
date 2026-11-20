@@ -7,6 +7,7 @@
 - [x] Verificar permisos y reglas con cuenta temporal; gestión, copia e historial en Ajustes, canjes concurrentes y prueba exacta de siete días. Pantalla pendiente intacta.
 
 ## Página pública
+- [x] Simplificar landing a hero, franja de fuentes, beneficios, pasos y cierre compacto; cabecera, chat y pie intactos; verificado en 926/1440/390/360 px, claro/oscuro, sin cortes y acceso correcto (1618 px de alto en el escritorio actual).
 - [x] Crear landing con maqueta HTML de chat, beneficios, pasos, fuentes y privacidad.
 - [x] Mostrarla sin sesión en /, conservar entrada a la app con sesión y trasladar login a /login.
 - [x] Comprobar navegación, sesión real, escritorio y móvil sin cambiar datos ni funciones de la app.
