@@ -50,7 +50,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
     <label className="grid gap-1.5 text-sm">Contraseña<Input type="password" required minLength={8} autoComplete={signup ? 'new-password' : 'current-password'} value={password} onChange={e => setPassword(e.target.value)}/></label>
     <Button type="submit" className="mt-2" disabled={busy}>{busy ? 'Un momento…' : signup ? 'Crear cuenta' : 'Entrar'}</Button>
    </form></>}
-   <p className="mt-6 text-center text-sm text-muted-foreground">{signup ? <>¿Ya tienes cuenta? <Link to="/auth" className="text-primary">Inicia sesión</Link></> : <>¿No tienes cuenta? <Link to="/registro" className="text-primary">Regístrate</Link></>}</p>
+   <p className="mt-6 text-center text-sm text-muted-foreground">{signup ? <>¿Ya tienes cuenta? <Link to="/login" className="text-primary">Inicia sesión</Link></> : <>¿No tienes cuenta? <Link to="/registro" className="text-primary">Regístrate</Link></>}</p>
   </div>
  </main>;
 }

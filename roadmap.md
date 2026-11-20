@@ -1,5 +1,10 @@
 # Second Brain
 
+## Página pública
+- [x] Crear landing con maqueta HTML de chat, beneficios, pasos, fuentes y privacidad.
+- [x] Mostrarla sin sesión en /, conservar entrada a la app con sesión y trasladar login a /login.
+- [x] Comprobar navegación, sesión real, escritorio y móvil sin cambiar datos ni funciones de la app.
+
 ## Aprobación de cuentas
 - [x] Estado pendiente/aprobado/rechazado y prueba desde aprobación, protección de datos y sincronización.
 - [x] Pantalla de espera/rechazo y solicitudes en Ajustes con contador para admin; conservar Ver como.

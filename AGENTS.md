@@ -53,3 +53,5 @@ use the editor.
 
 - Account approvals live in an owner-readable, write-protected table; pending email lists require server-verified admin before privileged auth reads, and decisions use a locked admin-checked database function to prevent trial resets.
 - Scheduled sync POST and PUT both use managed cron authentication; continuations forward only the validated bearer to the same origin without following redirects, keeping credentials server-only.
+- The public SSR home at / redirects sessions client-side to protected /chat; /login uses the unchanged auth form and /auth redirects to /login for existing links and managed guards. This keeps the landing crawlable without weakening app access.
+- Public landing styles are scoped under .landing-page in the shared stylesheet so app presentation stays unchanged.

@@ -14,4 +14,21 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+
+  it('matches / to the public landing instead of the authenticated app', () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    expect(router.matchRoutes('/').at(-1)?.routeId).toBe('/');
+  });
+
+  it('keeps the chat under the authenticated layout', () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    const routes = router.matchRoutes('/chat').map(match => match.routeId);
+    expect(routes).toContain('/_authenticated');
+    expect(routes.at(-1)).toBe('/_authenticated/chat');
+  });
+
+  it('matches the current login at /login', () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    expect(router.matchRoutes('/login').at(-1)?.routeId).toBe('/login');
+  });
 });

@@ -9,13 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegistroRouteImport } from './routes/registro'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAjustesRouteImport } from './routes/_authenticated/ajustes'
 import { Route as AuthenticatedAprobacionRouteImport } from './routes/_authenticated/aprobacion'
 import { Route as AuthenticatedBibliotecaRouteImport } from './routes/_authenticated/biblioteca'
+import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
 import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
 import { Route as ApiChatAnswerRouteImport } from './routes/api/chat-answer'
@@ -23,6 +25,11 @@ import { Route as ApiPublicJobsSyncConnectionsRouteImport } from './routes/api/p
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicOauthNotionReturnRouteImport } from './routes/api/public/oauth/notion/return'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -32,15 +39,15 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegistroRoute = RegistroRouteImport.update({
   id: '/registro',
   path: '/registro',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAjustesRoute = AuthenticatedAjustesRouteImport.update({
   id: '/ajustes',
@@ -55,6 +62,11 @@ const AuthenticatedAprobacionRoute = AuthenticatedAprobacionRouteImport.update({
 const AuthenticatedBibliotecaRoute = AuthenticatedBibliotecaRouteImport.update({
   id: '/biblioteca',
   path: '/biblioteca',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedConexionesRoute = AuthenticatedConexionesRouteImport.update({
@@ -93,12 +105,14 @@ const ApiPublicOauthNotionReturnRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/ajustes': typeof AuthenticatedAjustesRoute
   '/aprobacion': typeof AuthenticatedAprobacionRoute
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
+  '/chat': typeof AuthenticatedChatRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
@@ -107,31 +121,35 @@ export interface FileRoutesByFullPath {
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/ajustes': typeof AuthenticatedAjustesRoute
   '/aprobacion': typeof AuthenticatedAprobacionRoute
   '/biblioteca': typeof AuthenticatedBibliotecaRoute
+  '/chat': typeof AuthenticatedChatRoute
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
-  '/': typeof AuthenticatedIndexRoute
   '/api/public/jobs/sync-connections': typeof ApiPublicJobsSyncConnectionsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/login': typeof LoginRoute
   '/registro': typeof RegistroRoute
   '/_authenticated/ajustes': typeof AuthenticatedAjustesRoute
   '/_authenticated/aprobacion': typeof AuthenticatedAprobacionRoute
   '/_authenticated/biblioteca': typeof AuthenticatedBibliotecaRoute
+  '/_authenticated/chat': typeof AuthenticatedChatRoute
   '/_authenticated/conexiones': typeof AuthenticatedConexionesRoute
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
   '/api/public/jobs/sync-connections': typeof ApiPublicJobsSyncConnectionsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
@@ -141,10 +159,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/login'
     | '/registro'
     | '/ajustes'
     | '/aprobacion'
     | '/biblioteca'
+    | '/chat'
     | '/conexiones'
     | '/suscripcion'
     | '/api/chat-answer'
@@ -153,38 +173,44 @@ export interface FileRouteTypes {
     | '/api/public/oauth/notion/return'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/auth'
+    | '/login'
     | '/registro'
     | '/ajustes'
     | '/aprobacion'
     | '/biblioteca'
+    | '/chat'
     | '/conexiones'
     | '/suscripcion'
     | '/api/chat-answer'
-    | '/'
     | '/api/public/jobs/sync-connections'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
   id:
     | '__root__'
+    | '/'
     | '/_authenticated'
     | '/auth'
+    | '/login'
     | '/registro'
     | '/_authenticated/ajustes'
     | '/_authenticated/aprobacion'
     | '/_authenticated/biblioteca'
+    | '/_authenticated/chat'
     | '/_authenticated/conexiones'
     | '/_authenticated/suscripcion'
     | '/api/chat-answer'
-    | '/_authenticated/'
     | '/api/public/jobs/sync-connections'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  LoginRoute: typeof LoginRoute
   RegistroRoute: typeof RegistroRoute
   ApiChatAnswerRoute: typeof ApiChatAnswerRoute
   ApiPublicJobsSyncConnectionsRoute: typeof ApiPublicJobsSyncConnectionsRoute
@@ -194,6 +220,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -208,19 +241,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/registro': {
       id: '/registro'
       path: '/registro'
       fullPath: '/registro'
       preLoaderRoute: typeof RegistroRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/ajustes': {
       id: '/_authenticated/ajustes'
@@ -241,6 +274,13 @@ declare module '@tanstack/react-router' {
       path: '/biblioteca'
       fullPath: '/biblioteca'
       preLoaderRoute: typeof AuthenticatedBibliotecaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/chat': {
+      id: '/_authenticated/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof AuthenticatedChatRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/conexiones': {
@@ -292,26 +332,28 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAjustesRoute: typeof AuthenticatedAjustesRoute
   AuthenticatedAprobacionRoute: typeof AuthenticatedAprobacionRoute
   AuthenticatedBibliotecaRoute: typeof AuthenticatedBibliotecaRoute
+  AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedConexionesRoute: typeof AuthenticatedConexionesRoute
   AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAjustesRoute: AuthenticatedAjustesRoute,
   AuthenticatedAprobacionRoute: AuthenticatedAprobacionRoute,
   AuthenticatedBibliotecaRoute: AuthenticatedBibliotecaRoute,
+  AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedConexionesRoute: AuthenticatedConexionesRoute,
   AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  LoginRoute: LoginRoute,
   RegistroRoute: RegistroRoute,
   ApiChatAnswerRoute: ApiChatAnswerRoute,
   ApiPublicJobsSyncConnectionsRoute: ApiPublicJobsSyncConnectionsRoute,
