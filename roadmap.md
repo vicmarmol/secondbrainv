@@ -4,6 +4,7 @@
 - [x] Crear landing con maqueta HTML de chat, beneficios, pasos, fuentes y privacidad.
 - [x] Mostrarla sin sesión en /, conservar entrada a la app con sesión y trasladar login a /login.
 - [x] Comprobar navegación, sesión real, escritorio y móvil sin cambiar datos ni funciones de la app.
+- [x] Rediseñar «Cómo funciona» como tres tarjetas en fila (apiladas en móvil) con número, icono, título y descripción, flechas sutiles en escritorio, menos hueco vertical y sin la etiqueta «Así de sencillo»; verificado en claro/oscuro.
 
 ## Aprobación de cuentas
 - [x] Estado pendiente/aprobado/rechazado y prueba desde aprobación, protección de datos y sincronización.
