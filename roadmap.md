@@ -1,10 +1,10 @@
 # Second Brain
 
 ## Invitaciones
-- [ ] Crear código único activo e historial privados para admin.
-- [ ] Añadir gestión de invitaciones junto a solicitudes en Ajustes sin cambiar Ver como.
-- [ ] Canje atómico con aprobación y prueba compartidas; límite propio confirmado: cinco fallos por usuario por hora.
-- [ ] Verificar permisos, reglas y gestión desde Ajustes.
+- [x] Crear código único activo e historial privados para admin.
+- [x] Añadir gestión de invitaciones junto a solicitudes en Ajustes sin cambiar Ver como.
+- [x] Canje atómico con aprobación y prueba compartidas; límite propio confirmado: cinco fallos por usuario por hora.
+- [x] Verificar permisos y reglas con cuenta temporal; gestión, copia e historial en Ajustes, canjes concurrentes y prueba exacta de siete días. Pantalla pendiente intacta.
 
 ## Página pública
 - [x] Crear landing con maqueta HTML de chat, beneficios, pasos, fuentes y privacidad.
