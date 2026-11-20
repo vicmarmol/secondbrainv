@@ -1,9 +1,9 @@
 # Second Brain
 
 ## Bienvenida sin fuentes
-- [ ] Añadir /bienvenida sin barra lateral, Notion y fuentes futuras; acciones y estados de carga/error.
-- [ ] Redirigir entrada al chat con cero conexiones activas y cero documentos, incluyendo ejemplos; conservar autorización y Ver como.
-- [ ] Verificar reglas, carga de ejemplos, cancelación de Notion y navegación con una cuenta temporal.
+- [x] Añadir /bienvenida sin barra lateral, Notion y fuentes futuras; acciones y estados de carga/error.
+- [x] Redirigir entrada al chat con cero conexiones activas y cero documentos, incluyendo ejemplos; conservar autorización y Ver como.
+- [x] Verificar con cuenta temporal aprobada: 20 ejemplos is_sample sin alterar conexiones, redirección con una conexión o documentos, cancelación real de Notion, cierre de sesión, móvil/claro/oscuro y preview vacío simulado. Consentimiento completo de Notion requiere la cuenta del titular; no se modificaron fuentes reales.
 
 ## Registro con invitación
 - [x] Pantalla /registro y enlaces de la landing; conservar login.
