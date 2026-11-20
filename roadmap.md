@@ -1,9 +1,9 @@
 # Second Brain
 
 ## Registro con invitación
-- [ ] Pantalla /registro y enlaces de la landing; conservar login.
-- [ ] Código temporal de una hora y canje único autenticado antes de comprobar aprobación; aviso sin editar la espera.
-- [ ] Verificar caducidad, redirecciones y canje con sesión real, sin cambiar cuentas existentes.
+- [x] Pantalla /registro y enlaces de la landing; conservar login.
+- [x] Código temporal de una hora y canje único autenticado antes de comprobar aprobación; aviso sin editar la espera.
+- [x] Caducidad, redirecciones y canjes reales inválido/limitado/válido verificados con cuenta temporal; prueba de siete días leída y sin paso por espera. Confirmación de correo y llamada Google verificadas con respuestas simuladas, no consentimiento externo.
 
 ## Invitaciones
 - [x] Crear código único activo e historial privados para admin.
