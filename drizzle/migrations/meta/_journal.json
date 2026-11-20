@@ -113,6 +113,20 @@
       "when": 1795120875341,
       "tag": "0015_account_approval_access",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1795199142920,
+      "tag": "0016_invite_codes_admin",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1795199265135,
+      "tag": "0017_invite_code_redemption",
+      "breakpoints": true
     }
   ]
 }

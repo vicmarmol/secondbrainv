@@ -212,6 +212,80 @@ export type Database = {
         }
         Relationships: []
       }
+      invite_code_attempts: {
+        Row: {
+          attempted_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          attempted_at?: string
+          id?: string
+          user_id?: string
+        }
+        Update: {
+          attempted_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      invite_code_uses: {
+        Row: {
+          id: string
+          invite_code_id: string
+          used_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          invite_code_id: string
+          used_at?: string
+          user_id?: string
+        }
+        Update: {
+          id?: string
+          invite_code_id?: string
+          used_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invite_code_uses_invite_code_id_fkey"
+            columns: ["invite_code_id"]
+            isOneToOne: false
+            referencedRelation: "invite_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invite_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          id: string
+          user_id: string
+          uses: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          uses?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          uses?: number
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           answer_metadata: Json
@@ -407,6 +481,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_pending_approval: {
+        Args: {
+          decision: Database["public"]["Enums"]["approval_status"]
+          decision_time: string
+          target_user: string
+        }
+        Returns: undefined
+      }
       decide_user_approval: {
         Args: {
           decision: Database["public"]["Enums"]["approval_status"]
@@ -458,6 +540,11 @@ export type Database = {
         Returns: boolean
       }
       load_sample_data: { Args: never; Returns: undefined }
+      manage_invite_code: {
+        Args: { action: string; expected_active_id?: string }
+        Returns: undefined
+      }
+      redeem_invite_code: { Args: { code: string }; Returns: Json }
       search_chat_documents: {
         Args: { question: string }
         Returns: {

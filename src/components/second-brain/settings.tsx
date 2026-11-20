@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { loadSampleData, deleteSampleData } from '@/services';
 import { ApprovalRequests } from './approval-requests';
+import { InvitePanel } from './invite-panel';
 
 export function SettingsView({ admin = false }: { admin?: boolean }) {
  const [busy, setBusy] = useState(false);
@@ -23,7 +24,7 @@ export function SettingsView({ admin = false }: { admin?: boolean }) {
  return <div className="mx-auto w-full max-w-3xl overflow-y-auto p-6">
   <h1 className="text-2xl font-semibold">Ajustes</h1>
   <p className="mt-1 text-sm text-muted-foreground">Configura tu espacio personal.</p>
-  {admin && <ApprovalRequests/>}
+  {admin && <><ApprovalRequests/><InvitePanel/></>}
   <section className="mt-6 rounded-lg border border-border bg-card p-4">
    <h2 className="font-medium">Datos de ejemplo</h2>
    <p className="mt-1 text-sm text-muted-foreground">Añade 20 documentos y 5 conversaciones de ejemplo para explorar la aplicación. No cambia tus conexiones y puedes eliminarlos cuando quieras. Solo tú podrás verlos.</p>
