@@ -3,7 +3,7 @@ import { ArrowRight, Brain, Check, FileText, FolderOpen, Link2, LockKeyhole, Shi
 import { Button } from '@/components/ui/button';
 
 function AccessButton({ className = '' }: { className?: string }) {
- return <Button size="lg" asChild className={className}><Link to="/login">Solicitar acceso<ArrowRight aria-hidden="true"/></Link></Button>;
+ return <Button size="lg" asChild className={className}><Link to="/registro">Solicitar acceso<ArrowRight aria-hidden="true"/></Link></Button>;
 }
 
 function ChatExample() {

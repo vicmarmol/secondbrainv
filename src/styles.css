@@ -199,6 +199,10 @@
 .save-field select, .save-field input, .save-field textarea { width: 100%; min-width: 0; box-sizing: border-box; }
 
 /* Public landing: isolated from the workspace and authentication form. */
+.registration-card { padding: 28px 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); box-shadow: var(--shadow-soft); }
+.google-signup-button { --google-background: #FFFFFF; --google-border: #747775; --google-text: #1F1F1F; background: var(--google-background); border-color: var(--google-border); color: var(--google-text); }
+.dark .google-signup-button { --google-background: #131314; --google-border: #8E918F; --google-text: #E3E3E3; }
+.google-signup-button:hover { background: var(--google-background); color: var(--google-text); }
 .landing-page { --landing-ink: oklch(.25 .025 260); --landing-muted: oklch(.48 .015 260); --landing-blue-surface: oklch(.975 .009 264); --landing-warning-ink: oklch(.44 .09 70); --landing-shadow: 0 16px 48px oklch(.32 .04 264 / .07), 0 2px 6px oklch(.32 .04 264 / .03); background: var(--background); color: var(--landing-ink); }
 .dark .landing-page { --landing-ink: var(--foreground); --landing-muted: var(--muted-foreground); --landing-blue-surface: var(--muted); --landing-warning-ink: var(--warning); }
 .landing-page *, .landing-page *::before, .landing-page *::after { box-sizing: border-box; letter-spacing: 0; }

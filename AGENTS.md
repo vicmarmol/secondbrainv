@@ -57,3 +57,4 @@ use the editor.
 - Scheduled sync POST and PUT both use managed cron authentication; continuations forward only the validated bearer to the same origin without following redirects, keeping credentials server-only.
 - The public SSR home at / redirects sessions client-side to protected /chat; /login uses the unchanged auth form and /auth redirects to /login for existing links and managed guards. This keeps the landing crawlable without weakening app access.
 - Public landing styles are scoped under .landing-page in the shared stylesheet so app presentation stays unchanged.
+- Consume registration invitations once before access reads; keep waiting-page notices in the root shell to preserve its component.

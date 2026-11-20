@@ -1,5 +1,10 @@
 # Second Brain
 
+## Registro con invitación
+- [ ] Pantalla /registro y enlaces de la landing; conservar login.
+- [ ] Código temporal de una hora y canje único autenticado antes de comprobar aprobación; aviso sin editar la espera.
+- [ ] Verificar caducidad, redirecciones y canje con sesión real, sin cambiar cuentas existentes.
+
 ## Invitaciones
 - [x] Crear código único activo e historial privados para admin.
 - [x] Añadir gestión de invitaciones junto a solicitudes en Ajustes sin cambiar Ver como.

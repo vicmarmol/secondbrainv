@@ -1,6 +1,8 @@
 import { getBillingState, startSubscriptionCheckout, confirmSubscriptionCheckout, openBillingPortal } from '@/lib/billing.functions';
 import { paymentEnvironment } from '@/lib/billing';
+import { completeRegistrationInvitation } from '@/services/registration';
 export async function getBilling() {
+ await completeRegistrationInvitation();
  let environment: 'sandbox' | 'live' = 'live';
  try { environment = paymentEnvironment(); } catch { /* Access remains readable before live payments are configured. */ }
  return getBillingState({ data: { environment } });

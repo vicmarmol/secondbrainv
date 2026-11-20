@@ -4,16 +4,18 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { clearInvitationNotice, getInvitationNotice, getServerInvitationNotice, subscribeInvitationNotice } from '@/services/registration';
 
 function NotFoundComponent() {
   return (
@@ -125,6 +127,7 @@ function RootComponent() {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      if (event === 'SIGNED_OUT') clearInvitationNotice();
       router.invalidate();
       if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
     });
@@ -134,8 +137,15 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <InvitationNotice />
       <Outlet />
       <Toaster />
     </QueryClientProvider>
   );
+}
+
+function InvitationNotice() {
+ const failed = useSyncExternalStore(subscribeInvitationNotice, getInvitationNotice, getServerInvitationNotice);
+ const waiting = useRouterState({ select: state => state.location.pathname === '/aprobacion' });
+ return failed && waiting ? <div role="alert" className="border-b border-border bg-warning-surface px-6 py-4 text-center text-sm text-foreground">El código no era válido. Puedes volver a intentarlo o esperar a que aprobemos tu acceso.</div> : null;
 }
