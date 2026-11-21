@@ -155,4 +155,3 @@ jobs:
           done
           echo "::error::La web se ha publicado, pero da error ($codigo): $URL"
           exit 1
-:
