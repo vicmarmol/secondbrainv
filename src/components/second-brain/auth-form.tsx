@@ -70,6 +70,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
    </form></>}
    <p className="mt-6 text-center text-sm text-muted-foreground">{signup ? <>¿Ya tienes cuenta? <Link to="/login" className="text-primary">Inicia sesión</Link></> : <>¿No tienes cuenta? <Link to="/registro" className="text-primary">Regístrate</Link></>}</p>
    </div>
+   {!signup && <footer className="mt-8 border-t border-border pt-5"><nav aria-label="Información legal" className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-center text-xs text-muted-foreground"><Link to="/privacidad" className="underline-offset-4 hover:text-primary hover:underline">Política de Privacidad</Link><Link to="/condiciones" className="underline-offset-4 hover:text-primary hover:underline">Condiciones del Servicio</Link></nav></footer>}
   </div>
  </main>;
 }

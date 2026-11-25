@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CondicionesRouteImport } from './routes/condiciones'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as AuthenticatedAjustesRouteImport } from './routes/_authenticated/ajustes'
 import { Route as AuthenticatedAprobacionRouteImport } from './routes/_authenticated/aprobacion'
@@ -40,9 +42,19 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CondicionesRoute = CondicionesRouteImport.update({
+  id: '/condiciones',
+  path: '/condiciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegistroRoute = RegistroRouteImport.update({
@@ -113,7 +125,9 @@ const ApiPublicOauthNotionReturnRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/condiciones': typeof CondicionesRoute
   '/login': typeof LoginRoute
+  '/privacidad': typeof PrivacidadRoute
   '/registro': typeof RegistroRoute
   '/ajustes': typeof AuthenticatedAjustesRoute
   '/aprobacion': typeof AuthenticatedAprobacionRoute
@@ -130,7 +144,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/condiciones': typeof CondicionesRoute
   '/login': typeof LoginRoute
+  '/privacidad': typeof PrivacidadRoute
   '/registro': typeof RegistroRoute
   '/ajustes': typeof AuthenticatedAjustesRoute
   '/aprobacion': typeof AuthenticatedAprobacionRoute
@@ -149,7 +165,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/condiciones': typeof CondicionesRoute
   '/login': typeof LoginRoute
+  '/privacidad': typeof PrivacidadRoute
   '/registro': typeof RegistroRoute
   '/_authenticated/ajustes': typeof AuthenticatedAjustesRoute
   '/_authenticated/aprobacion': typeof AuthenticatedAprobacionRoute
@@ -168,7 +186,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/condiciones'
     | '/login'
+    | '/privacidad'
     | '/registro'
     | '/ajustes'
     | '/aprobacion'
@@ -185,7 +205,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/condiciones'
     | '/login'
+    | '/privacidad'
     | '/registro'
     | '/ajustes'
     | '/aprobacion'
@@ -203,7 +225,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/condiciones'
     | '/login'
+    | '/privacidad'
     | '/registro'
     | '/_authenticated/ajustes'
     | '/_authenticated/aprobacion'
@@ -222,7 +246,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CondicionesRoute: typeof CondicionesRoute
   LoginRoute: typeof LoginRoute
+  PrivacidadRoute: typeof PrivacidadRoute
   RegistroRoute: typeof RegistroRoute
   ApiChatAnswerRoute: typeof ApiChatAnswerRoute
   ApiPublicJobsSyncConnectionsRoute: typeof ApiPublicJobsSyncConnectionsRoute
@@ -253,11 +279,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/condiciones': {
+      id: '/condiciones'
+      path: '/condiciones'
+      fullPath: '/condiciones'
+      preLoaderRoute: typeof CondicionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/registro': {
@@ -374,7 +414,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  CondicionesRoute: CondicionesRoute,
   LoginRoute: LoginRoute,
+  PrivacidadRoute: PrivacidadRoute,
   RegistroRoute: RegistroRoute,
   ApiChatAnswerRoute: ApiChatAnswerRoute,
   ApiPublicJobsSyncConnectionsRoute: ApiPublicJobsSyncConnectionsRoute,

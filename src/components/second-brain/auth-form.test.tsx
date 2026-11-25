@@ -1,3 +1,4 @@
+// @vitest-environment-options {"url":"https://test.lovable.app"}
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
