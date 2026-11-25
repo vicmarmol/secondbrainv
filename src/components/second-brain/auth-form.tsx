@@ -40,6 +40,12 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
   setBusy(true);
   try {
    if (signup) storeRegistrationInvitation(inviteCode);
+   if (!window.location.hostname.endsWith('.lovable.app')) {
+    // Fuera de Lovable (p. ej. Cloudflare Workers) no existe /~oauth: usa Google con credenciales propias.
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
+    if (error) throw new Error('No se ha podido entrar con Google.');
+    return;
+   }
    const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: window.location.origin });
    if (result.error) throw new Error('No se ha podido entrar con Google.');
    if (result.redirected) return;
