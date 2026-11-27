@@ -1,5 +1,10 @@
 # Second Brain
 
+## Páginas legales públicas
+- [x] Crear /privacidad y /condiciones con información del titular y servicios usados.
+- [x] Enlazar desde el login; acceso sin sesión y navegación verificados en escritorio/móvil, 133 pruebas pasan.
+- [x] Publicar incluyendo los cambios anteriores autorizados; /privacidad y /condiciones responden 200 sin sesión en secondbrainv.lovable.app y ambos enlaces del login funcionan.
+
 ## Cuenta de prueba de bienvenida
 - [x] Cuenta demo permanente, aprobada y sin fuentes ni documentos, con credenciales para el titular; verificar que abre /bienvenida.
 
