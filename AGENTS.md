@@ -58,3 +58,4 @@ use the editor.
 - The public SSR home at / redirects sessions client-side to protected /chat; /login uses the unchanged auth form and /auth redirects to /login for existing links and managed guards. This keeps the landing crawlable without weakening app access.
 - Public landing styles are scoped under .landing-page in the shared stylesheet so app presentation stays unchanged.
 - Consume invitations before access reads; notices stay in the root. Welcome uses owner counts and existing OAuth/sample services, not new auth.
+- /bienvenida/indexando: only for new spaces (src/lib/onboarding.ts); reuses the Notion sync loop.

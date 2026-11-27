@@ -24,6 +24,7 @@ import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/c
 import { Route as AuthenticatedConexionesRouteImport } from './routes/_authenticated/conexiones'
 import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
 import { Route as ApiChatAnswerRouteImport } from './routes/api/chat-answer'
+import { Route as AuthenticatedBienvenidaIndexandoRouteImport } from './routes/_authenticated/bienvenida_.indexando'
 import { Route as ApiPublicJobsSyncConnectionsRouteImport } from './routes/api/public/jobs/sync-connections'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicOauthNotionReturnRouteImport } from './routes/api/public/oauth/notion/return'
@@ -103,6 +104,12 @@ const ApiChatAnswerRoute = ApiChatAnswerRouteImport.update({
   path: '/api/chat-answer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedBienvenidaIndexandoRoute =
+  AuthenticatedBienvenidaIndexandoRouteImport.update({
+    id: '/bienvenida_/indexando',
+    path: '/bienvenida/indexando',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicJobsSyncConnectionsRoute =
   ApiPublicJobsSyncConnectionsRouteImport.update({
     id: '/api/public/jobs/sync-connections',
@@ -137,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
+  '/bienvenida/indexando': typeof AuthenticatedBienvenidaIndexandoRoute
   '/api/public/jobs/sync-connections': typeof ApiPublicJobsSyncConnectionsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
@@ -156,6 +164,7 @@ export interface FileRoutesByTo {
   '/conexiones': typeof AuthenticatedConexionesRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
+  '/bienvenida/indexando': typeof AuthenticatedBienvenidaIndexandoRoute
   '/api/public/jobs/sync-connections': typeof ApiPublicJobsSyncConnectionsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
@@ -177,6 +186,7 @@ export interface FileRoutesById {
   '/_authenticated/conexiones': typeof AuthenticatedConexionesRoute
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/api/chat-answer': typeof ApiChatAnswerRoute
+  '/_authenticated/bienvenida_/indexando': typeof AuthenticatedBienvenidaIndexandoRoute
   '/api/public/jobs/sync-connections': typeof ApiPublicJobsSyncConnectionsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/oauth/notion/return': typeof ApiPublicOauthNotionReturnRoute
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/conexiones'
     | '/suscripcion'
     | '/api/chat-answer'
+    | '/bienvenida/indexando'
     | '/api/public/jobs/sync-connections'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/conexiones'
     | '/suscripcion'
     | '/api/chat-answer'
+    | '/bienvenida/indexando'
     | '/api/public/jobs/sync-connections'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
@@ -237,6 +249,7 @@ export interface FileRouteTypes {
     | '/_authenticated/conexiones'
     | '/_authenticated/suscripcion'
     | '/api/chat-answer'
+    | '/_authenticated/bienvenida_/indexando'
     | '/api/public/jobs/sync-connections'
     | '/api/public/payments/webhook'
     | '/api/public/oauth/notion/return'
@@ -363,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatAnswerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/bienvenida_/indexando': {
+      id: '/_authenticated/bienvenida_/indexando'
+      path: '/bienvenida/indexando'
+      fullPath: '/bienvenida/indexando'
+      preLoaderRoute: typeof AuthenticatedBienvenidaIndexandoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/jobs/sync-connections': {
       id: '/api/public/jobs/sync-connections'
       path: '/api/public/jobs/sync-connections'
@@ -395,6 +415,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedConexionesRoute: typeof AuthenticatedConexionesRoute
   AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
+  AuthenticatedBienvenidaIndexandoRoute: typeof AuthenticatedBienvenidaIndexandoRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -405,6 +426,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedConexionesRoute: AuthenticatedConexionesRoute,
   AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,
+  AuthenticatedBienvenidaIndexandoRoute: AuthenticatedBienvenidaIndexandoRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

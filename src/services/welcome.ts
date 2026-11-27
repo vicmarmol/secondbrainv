@@ -13,7 +13,8 @@ export async function getWelcomeCounts(): Promise<WelcomeCounts> {
 /** Same popup, callback contract and authenticated exchange used by the Connections page. */
 export async function connectWelcomeNotion(
  start: () => Promise<{ authorizationUrl: string }>,
- complete: (input: { data: { code: string; nonce: string; mode: 'connect' } }) => Promise<unknown>,
+ complete: (input: { data: { code: string; nonce: string; mode: 'connect' | 'reauthorize' } }) => Promise<unknown>,
+ mode: 'connect' | 'reauthorize' = 'connect',
 ) {
  const popup = window.open('', 'notion-oauth', 'width=600,height=720');
  if (!popup) throw new Error('No se pudo conectar. Inténtalo de nuevo');
@@ -33,6 +34,6 @@ export async function connectWelcomeNotion(
    window.addEventListener('message', listener);
   });
   popup.location.href = authorizationUrl;
-  await complete({ data: { ...await result, mode: 'connect' } });
+  await complete({ data: { ...await result, mode } });
  } finally { popup.close(); }
 }

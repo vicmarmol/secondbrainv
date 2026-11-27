@@ -32,7 +32,7 @@ export function WelcomePage() {
  }
  async function connect() {
   setBusy('notion'); setNotionError(false);
-  try { await connectWelcomeNotion(start, complete); await enterChat(); }
+  try { await connectWelcomeNotion(start, complete); await queryClient.invalidateQueries(); await navigate({ to: '/bienvenida/indexando', replace: true }); }
   catch { setNotionError(true); }
   finally { setBusy(null); }
  }
